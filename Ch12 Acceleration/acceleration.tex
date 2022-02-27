@@ -1,0 +1,386 @@
+\documentclass[10pt,mathserif]{beamer}
+
+\input{../preambles/defs.tex}
+\input{../preambles/beamer_setting}
+\input{../preambles/affiliation}
+
+\title{\large \bfseries Acceleration}
+
+\begin{document}
+
+\frame{
+\thispagestyle{empty}
+\titlepage
+}
+
+
+\begin{frame}
+\frametitle{Acceleration}
+Theorem~1 establishes a $\mathcal{O}(1/k)$ rate on the squared norm of the fixed-point residual and a similar $\mathcal{O}(1/k)$ rate can be established for the other setups.
+This rate can be improved (at least in the worst-case rate).
+
+\vspace{0.2in}
+
+In optimization, an acceleration is a modification of a base method that improves the convergence rate.
+An improvement from $\mathcal{O}(1/k)$ to $\mathcal{O}(1/k^2)$ is most common for first-order algorithms.
+
+\vspace{0.2in}
+
+Accelerations is an active topic of research. We keep the discussion minimal and discuss Nesterov's AGM and APPM/OHM.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Accelerated gradient method}
+Consider 
+\begin{align*}
+\begin{array}{ll}
+\underset{x\in \reals^n}{\mbox{minimize}}
+  &f(x),
+  \end{array}
+\end{align*}
+where $f$ is convex and $L$-smooth.
+The method
+\begin{align*}
+x^{k+1}&=y^k-\frac{1}{L} \nabla f(y^k)\\
+y^{k+1}&=x^{k+1}+\frac{k-1}{k+2}(x^{k+1}-x^{k}),
+\end{align*}
+where $x^0=y^0$, is Nesterov's accelerated gradient method (AGM).
+\vspace{0.2in}
+
+\setcounter{theorem}{16}
+\begin{theorem}
+\label{thm:agm}
+Assume the convex, $L$-smooth function $f$ has a minimizer $x^\star$.
+Then AGM converges with the rate
+\[
+f(x^k)-f(x^\star)
+\le 
+\frac{2L\|x^0-x^\star\|^2}{k^2}
+\]
+for $k=1,2,\dots$.
+\end{theorem}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Theorem~\ref{thm:agm}}
+Equivalent form of AGM:
+\begin{align*}
+x^{k+1}&=y^k-\frac{1}{L} \nabla f(y^k)\\
+z^{k+1}&=z^k-\frac{k+1}{2L}\nabla f(y^k)\\
+y^{k+1}&=\left(1-\frac{2}{k+2}\right)x^{k+1}+\frac{2}{k+2}z^{k+1},
+\end{align*}
+where $x^0=y^0=z^0$.
+ (cf.\ Exercise~12.1).
+\end{frame}
+
+
+\begin{frame}[plain]
+\frametitle{Proof of Theorem~\ref{thm:agm}}
+Preliminary observations.
+Define
+\[
+\theta_{k}=\frac{k+1}{2}
+\]
+for $k=-1,0,1,\dots$. 
+It is straightforward to verify
+\begin{equation}
+\theta_k^2-\theta_k\le \theta_{k-1}^2
+\label{eq:agm-phi-rel}
+\end{equation}
+for $k=0,1,\dots$.
+% Define 
+% \[
+% z^k=\theta_ky^k-\left(\theta_k-1\right)x^k.
+% \]
+% With basic calculations, we have
+% \begin{equation}
+% z^{k+1}=z^k+\frac{\theta_k}{L}\nabla f(x^k).    
+% \label{eq:agm-z-def}
+% \end{equation}
+We will use the inequalities
+\begin{gather}
+f(x^{k+1})
+-f(y^{k})+\frac{1}{2L}\|\nabla f(y^k)\|^2
+\le 0
+\label{eq:agm-ineq1}\\
+f(y^{k})-f(x^{k})\le\langle \nabla f(y^k),y^k-x^k\rangle
+\label{eq:agm-ineq2}\\
+f(y^{k})-f(x^{\star})\le\langle \nabla f(y^k),y^k-x^\star\rangle.
+\label{eq:agm-ineq3}
+\end{gather}
+The first, \eqref{eq:agm-ineq1}, follows from $L$-smoothness, which implies $f(x)-\frac{L}{2}\|x-y^k\|^2$ is concave as a function of $x$, which in turn implies
+\[
+f(x)-\frac{L}{2}\|x-y^k\|^2\le 
+f(y^{k})+\langle \nabla f(y^k),x-y^k\rangle.
+\]
+We plug in $x=x^{k+1}=y^k-\frac{1}{L}\nabla f(y^k)$ to get \eqref{eq:agm-ineq1}.
+The second and third inequalities, \eqref{eq:agm-ineq2} and \eqref{eq:agm-ineq3}, follow from convexity of $f$.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Proof of Theorem~\ref{thm:agm}}
+Define
+\[
+V^k=
+\theta_{k-1}^2
+\left(f(x^k)-f(x^\star)\right)+\frac{L}{2}\|z^k-x^\star\|^2.
+\]
+If we establish $V^{k}\le V^{k-1}\le \dots \le V^0$, then $V^k\le V^0$ implies
+\[
+\theta_{k-1}^2(f(x^k)-f(x^\star))\le V^k\le V^0= \frac{2L}{k^2}\|z^0-x^\star\|^2.
+\]
+\end{frame}
+
+
+\begin{frame}[plain,fragile]
+\frametitle{Proof of Theorem~\ref{thm:agm}}
+\vspace{-0.2in}
+\begingroup\makeatletter\def\f@size{9}\check@mathfonts
+\begin{align*}
+&V^{k+1}-V^k\\
+&=
+\theta_{k}^2
+\left(f(x^{k+1})-f(x^\star)
++\frac{1}{2L}\|\nabla f(y^k)\|^2
+\right)
+-
+\theta_{k-1}^2(f(x^{k})-f(x^\star))\\
+&\qquad
+-\theta_k\langle \nabla f(y^k),z^k-x^\star\rangle\\
+&\stackrel{\eqref{eq:agm-ineq1}}{\le}
+\theta_{k}^2
+\left(f(y^k)-f(x^\star)
+\right)
+-
+\theta_{k-1}^2(f(x^{k})-f(x^\star))
+-\theta_k\langle \nabla f(y^k),z^k-x^\star\rangle\\
+&=
+(\theta_k^2-\theta_k)(f(y^k)-f(x^k))+\theta_k(f(y^k)-f(x^k))+(\theta_k^2-\theta_{k-1}^2)(f(x^k)-f(x^\star))\\
+&\qquad-\theta_k\langle \nabla f(y^k),z^k-x^\star\rangle\\
+&\stackrel{\eqref{eq:agm-phi-rel}}{\le}
+(\theta_k^2-\theta_k)(f(y^k)-f(x^k))+\theta_k(f(y^k)-f(x^\star))-\theta_k\langle \nabla f(y^k),z^k-x^\star\rangle\\
+&\stackrel{\eqref{eq:agm-ineq2}, \eqref{eq:agm-ineq3}}{\le}
+(\theta_k^2-\theta_k)\langle \nabla f(y^k),y^k-x^k\rangle
++
+\theta_{k}\langle \nabla f(y^k),y^k-x^\star\rangle
+-\theta_k\langle \nabla f(y^k),z^k-x^\star\rangle\\
+%&=\theta_{k}^2\left< \nabla f(y^k), y^k-\left(1-\frac{1}{\theta_{k}}\right)x^k-\frac{1}{\theta_{k}}z^k\right>\\
+&=
+\theta_k\langle \nabla f(y^k),(1-\theta_{k})x^k+\theta_ky^k-z^k\rangle
+\stackrel{\text{def.\ of } z^{k}}{=}0,
+\end{align*}
+\endgroup
+where the first equality follows from
+\begingroup\makeatletter\def\f@size{9}\check@mathfonts
+\[
+\frac{L}{2}\left\|z^k-x^\star-\frac{\theta_k}{L}\nabla f(y^k)\right\|^2-\frac{L}{2}\|z^k-x^\star\|^2=
+-\theta_k\langle \nabla f(y^k),z^k-x^\star\rangle+
+\frac{\theta_k^2}{2L}\|\nabla f(y^k)\|^2.
+\]
+\endgroup
+
+\vspace{-0.20in}
+\qed
+\end{frame}
+
+\begin{frame}[fragile,plain]
+\frametitle{Comparison with gradient descent}
+Gradient descent with stepsize $\alpha=1/L$
+\begin{align*}
+    x^{k+1} = x^k - \frac{1}{L}\nabla f(x^k)
+\end{align*}
+converges at rate $\mathcal{O}(1/k)$.
+To see this, define
+\[
+V^{k}=k(f(x^k)-f(x^\star))+\frac{L}{2}\|x^k-x^\star\|^2
+\]
+and note
+\begingroup\makeatletter\def\f@size{8}\check@mathfonts
+\begin{align*}
+&\hspace*{-0.25in}
+V^{k+1}-V^k\\
+&\hspace*{-0.15in}=(k+1)(f(x^{k+1})-f(x^k))+f(x^k)-f(x^\star)+\frac{L}{2}\left(\frac{1}{L^2}\|\nabla f(x^k)\|^2-\frac{2}{L}\langle \nabla f(x^k),x^k-x^\star\rangle \right)\\
+&\hspace*{-0.15in}\le-\frac{k+1}{2L}\|\nabla f(x^k)\|^2+\langle \nabla f(x^k),x^k-x^\star\rangle+\frac{1}{2L}\|\nabla f(x^k)\|^2-\langle \nabla f(x^k),x^k-x^\star\rangle\\
+&\hspace*{-0.15in}=-\frac{k}{2L}\|\nabla f(x^k)\|^2\le 0,
+\end{align*}
+\endgroup
+where inequality follows from analogues of \eqref{eq:agm-ineq1} and \eqref{eq:agm-ineq3}.
+$V^k\le V^0$ implies
+\[
+f(x^k)-f(x^\star)\le \frac{L}{2k}\|x^0-x^\star\|^2-\frac{L}{2k}\|x^k-x^\star\|^2 \le  \frac{L}{2k}\|x^0-x^\star\|^2.
+\]
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Constructing the Lyapunov function}
+The non-increasing quantity $V^k$ is called a Lyapunov function, energy function, or potential function, and the style of proof relying on such quantities is called a Lyapunov analysis. 
+Convergence proofs based on Lyapunov analyses tend to be more concise.
+Constructing a $V^k$ is a highly non-trivial art, and we briefly outline the process for GD and AGM.
+
+\vspace{0.2in}
+
+Imagine analyzing GD, and we suspect the convergence rate is $f(x^k) - f(x^\star) = \mathcal{O}(1/k)$.
+We define $W^k=k(f(x^k)-f(x^\star))$ and, through some analysis, find
+\[
+W^{k+1}-W^k \le
+%-\frac{kL}{2}\|x^{k+1}-x^k\|^2 +
+\frac{L}{2}\|x^k - x^\star\|^2-\frac{L}{2}\|x^{k+1} - x^\star\|^2.
+\]
+So we define $V^k=k(f(x^k)-f(x^\star))+\frac{L}{2}\|x^k-x^\star\|^2$ and present a Lyapunov analysis.
+
+% One might be curious to try, instead, $W^k= t_k^2 (f(x^k) - f(x^\star))$ for some  to prove the (untrue) rate of $O(1/k^2)$ for GD.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Constructing the Lyapunov function}
+
+We may try to prove a faster rate for GD by defining $W^k= t_k^2 (f(x^k) - f(x^\star))$ with a yet unspecified $t_k$-sequence and analyzing $W^{k+1}-W^k$.
+If $t_k=\mathcal{O}(k)$, then perhaps we can establish an  $O(1/k^2)$ rate.
+However, such an effort does not leads nowhere.
+
+\vspace{0.2in}
+
+
+For AGM, we again define $W^k= t_{k-1}^2 (f(x^k) - f(x^\star))$ and analyze $W^{k+1}-W^k$.
+We can show
+\[
+W^{k+1}-W^k\le \frac{L}{2}\|z^k-x^\star\|^2-\frac{L}{2}\|z^{k+1}-x^\star\|^2.
+\]
+for $t_{k}^2-t_{k}\le t_{k-1}^2$ and $t_{k} \ge 0$. An admissible sequence is $t_k = (k+1)/2$.
+%, which is satisfied by a sequence with a growth rate $t_k=\mathcal{O}(k)$.
+So we define $V^k=t_k^2(f(x^k)-f(x^\star))+\frac{L}{2}\|z^k-x^\star\|^2$ and present a Lyapunov analysis.
+
+% for some $t_k=\mathcal{O}(k)$, aiming to proof $O(1/k^2)$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Accelerated proximal point and optimized Halpern}
+Consider
+\begin{align*}
+\begin{array}{ll}
+\underset{x\in \reals^n}{\mbox{find}}
+  &0\in \opA x,
+  \end{array}
+\end{align*}
+where $\opA$ is maximal monotone.
+The method
+\begin{align*}
+y^{k+1}&=\opJ_{\opA}x^k\\
+x^{k+1}&=y^{k+1}+\frac{k}{k+2}(y^{k+1}-y^k)-\frac{k}{k+2}(y^k-x^{k-1}),
+\end{align*}
+where $y^0=x^0$, is the accelerated proximal point method (APPM).
+\vspace{0.2in}
+
+Also consider 
+\begin{align*}
+\begin{array}{ll}
+\underset{x\in \reals^n}{\mbox{find}}
+  &x= \opT x,
+  \end{array}
+\end{align*}
+where $\opT\colon\reals^n\rightarrow\reals^n$ is nonexpansive.
+We call
+\[
+x^{k+1}=\frac{1}{k+2}x^0+\frac{k+1}{k+2}\opT x^k
+\]
+the optimized Halpern method (OHM).
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Accelerated proximal point and optimized Halpern}
+
+With $\opT=\opR_\opA$, finding elements of $\zer \opA$ and $\fix \opT$ are equivalent (cf.\ Exercise~10.1).
+The two methods APPM and OHM are equivalent (cf.\ Exercise~12.2).
+
+\begin{theorem}
+\label{thm:appm}
+Assume the maximal monotone operator $\opA$ has a zero $x^\star$.
+Then APPM/OHM converges with the rate
+\[
+\|x^{k-1}-\opJ_\opA x^{k-1}\|^2\le \frac{\|x^0-x^\star\|^2}{k^2}
+\]
+for $k=1,2,\dots$.
+\end{theorem}
+\vspace{0.2in}
+
+We can equivalently state this result as
+\[
+\|\opT x^{k-1}-x^{k-1}\|^2\le \frac{4\|x^0-x^\star\|^2}{k^2}.
+\]
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Theorem~\ref{thm:appm}}
+Define $\tilde{\opA}y^k=x^{k-1}-y^k$, which implies $\tilde{\opA}y^k\in \opA y^k$.
+Define
+\[
+V^k=k^2\|\tilde{\opA}y^k\|^2+k\langle \tilde{\opA}y^k,y^k-x^0\rangle
+\]
+for $k=0,1,\dots$.
+
+\vspace{0.2in}
+
+Then
+\[
+V^{k+1}- V^k=-k(k+1)\langle \tilde{\opA}y^{k+1}-\tilde{\opA}y^k,y^{k+1}-y^k\rangle,
+\]
+which can be verified by plugging in 
+\[
+y^{k+1}=\frac{1}{k+1}x^0+\frac{k}{k+1}(y^k-\tilde{\opA}y^k)-\tilde{\opA}y^{k+1}
+\]
+and performing basic (albeit somewhat tedious) calculations to check that all terms vanish.
+By monotonicity of $\opA$, we have $V^{k+1}\le V^k$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Theorem~\ref{thm:appm}}
+
+Since $V^k\le V^0=0$, we have
+\begin{align*}
+0&\ge V^k\\
+&=k^2\|\tilde{\opA}y^k\|^2+k\langle \tilde{\opA}y^k,x^\star-x^0\rangle+k\langle \tilde{\opA}y^k,y^k-x^\star\rangle\\
+&=
+\frac{k^2}{2}\|\tilde{\opA}y^k\|^2
+-\frac{1}{2}\|x^\star-x^0\|^2
++\frac{1}{2}\|k\tilde{\opA}y^k+x^\star-x^0\|^2
++
+k\langle \tilde{\opA}y^k,y^k-x^\star\rangle\\
+&\ge
+\frac{k^2}{2}\|\tilde{\opA}y^k\|^2
+-\frac{1}{2}\|x^\star-x^0\|^2,
+\end{align*}
+where the second equality follows from
+% Lemma~\ref{lem:cosine} with $a=\tilde{\opA}y^k$ and $a-b=y^k-x^\star$
+\[
+k\langle \tilde{\opA}y^k,x^\star-x^0\rangle
+=
+\frac{1}{2}\|k\tilde{\opA}y^k+x^\star-x^0\|^2
+-
+\frac{k^2}{2}\| \tilde{\opA}y^k\|^2
+-\frac{1}{2}\|x^\star-x^0\|^2
+\]
+ and the final inequality follows from monotonicity.\qed
+ \end{frame}
+ 
+
+
+\begin{frame}
+\frametitle{When does an acceleration accelerate?}
+In optimization (and more generally in applied mathematics and computer science), convergence rates are usually established in the worst case.
+If an unaccelerated method actually converges at an $\mathcal{O}(1/k)$ rate, then an $\mathcal{O}(1/k^2)$ acceleration is a speedup.
+However, if the observed convergence is already faster than $\mathcal{O}(1/k^2)$, then there is no guarantee of improvement. The acceleration may even slow down the convergence.
+
+
+\vspace{0.2in}
+
+In practice, an acceleration sometimes provides a speedup.
+An ``acceleration'' should be tried it out with the expectation that it may improve or worsen the convergence.
+\end{frame}
+
+
+\end{document}

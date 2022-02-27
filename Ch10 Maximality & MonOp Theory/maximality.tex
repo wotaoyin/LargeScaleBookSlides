@@ -1,0 +1,470 @@
+\documentclass[10pt,mathserif]{beamer}
+
+\input{../preambles/defs.tex}
+\input{../preambles/beamer_setting}
+\input{../preambles/affiliation}
+
+\title{\large \bfseries Maximality and Monotone Operator Theory}
+
+\begin{document}
+
+\frame{
+\thispagestyle{empty}
+\titlepage
+}
+
+
+\begin{frame}
+\frametitle{Monotone operator theory}
+Convex optimization theory, the main subject of study in this class, focuses on the derivation and analysis of convex optimization algorithms.
+\vspace{0.2in}
+
+Monotone operator theory views monotone operators as interesting objects in their own right and focuses on understanding them better.
+
+\vspace{0.2in}
+
+One goal of this section is to provide theoretical completeness and prove several results that were simply asserted in other sections.
+Another goal is to provide a gentle exposure to the field of monotone operator theory.
+
+\vspace{0.2in}
+
+Monotone operator theory takes place in infinite-dimensional Banach or Hilbert spaces, where a new set of interesting challenges arise.
+We limit our attention to finite-dimensional Euclidean spaces.
+
+\end{frame}
+
+
+\section{Maximality of subdifferential}
+
+\begin{frame}
+\frametitle{Operator extensions}
+$\bar{\opA}\colon\reals^n\rightrightarrows \reals^n$ is an extension of $\opA\colon\reals^n\rightrightarrows \reals^n$ if $\gra \bar{\opA} \supseteq \gra \opA $.\\
+$\bar{\opA}$ is a proper extension of $\opA$ if the containment $\gra \bar{\opA} \supset \gra \opA$ is strict.
+Recall, a monotone operator is maximal if it has no proper monotone extension.
+\vspace{0.2in}
+
+
+
+As discussed in \S2, if $\opA\colon\reals^n\rightrightarrows \reals^n$ is maximal monotone, then $\dom \opJ_\opA=\reals^n$.
+
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Maximality of subdifferential}
+\setcounter{theorem}{6}
+\begin{theorem}
+\label{thm:subdiff-maximal}
+If $f\colon\reals^n\rightarrow \reals^n\cup\{\infty\}$ is CCP, then $\partial f$ is maximal monotone.
+\end{theorem}
+\textbf{Proof.}
+We know  $\partial f$ is monotone.
+% By definition, $\partial f$ is maximal if and only if
+% $(\tilde{x},\tilde{g})\notin \partial f$ implies 
+% $\{(\tilde{x},\tilde{g})\}\cup \partial f$
+% is not monotone.
+% In other words, if $(\tilde{x},\tilde{g})\notin \partial f$, then
+% there is $(x,g)\in \partial f$ such that
+% $\langle g-\tilde g,x-\tilde x\rangle<0$.
+Assume for contradiction that there is 
+$(\tilde{x},\tilde{g})\notin \partial f$
+such that
+$\{(\tilde{x},\tilde{g})\}\cup \partial f$ is
+monotone.
+Define $(x,g)\in \partial f$ with
+\[
+x=\argmin_z\left\{f(z)+\frac{1}{2}\|z-(\tilde x+\tilde g)\|^2\right\},
+\qquad
+0= x-\tilde x+g-\tilde g.
+\]
+%We get $g\in \partial f(x)$ from the $0\in x-\tilde{x}+\partial f(x)-\tilde{g}$, the optimality condition of the $\argmin$.
+%Since a strongly convex CCP function has a unique minimizer, $x$ is well defined.
+Since $(\tilde x,\tilde g)\notin \partial f$, either
+$x\ne \tilde x$ or $g\ne \tilde g$ (or both).
+Using $x-\tilde{x}=-g+\tilde{g}$, we have
+\[
+\langle g-\tilde g,x-\tilde x\rangle=-\|x-\tilde x\|^2_2=-\|g-\tilde g\|^2_2
+<0,
+\]
+which contradicts the assumption that
+$\{(\tilde{x},\tilde{g})\}\cup \partial f$ is
+monotone.
+\qed
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Maximality of subdifferential}
+Key idea of proof:
+Given $v\in \reals^n$,
+\[
+v\mapsto (\underbrace{\prox_f(v)}_{=x},\underbrace{v-\prox_f(v)}_{=g})\in \partial f
+\]
+provides a unique decomposition $v=x+g$ such that $(x,g)\in \partial f$.
+\end{frame}
+
+
+
+
+
+
+\section{Fitzpatrick function}
+
+\begin{frame}
+\frametitle{Fitzpatrick function}
+For $\opA\colon\reals^n\rightrightarrows \reals^n$, Fitzpatrick function $\fitzpatrick_\opA\colon\reals^n\times\reals^n\rightarrow\reals\cup\{\infty\}$ is
+\[
+\fitzpatrick_\opA(x,u)=\langle x,u\rangle -\inf_{(y,v)\in \opA}\langle x-y,u-v\rangle
+=\sup_{(y,v)\in \opA}\left\{\langle y,u\rangle+\langle x,v\rangle-\langle y,v\rangle\right\}.
+\]
+%When $\opA$ is maximal monotone, $\fitzpatrick_\opA$ has certain nice properties.
+%which is useful when $\opA$ is maximal monotone.
+
+%(When $A$ is not maximal monotone, $\fitzpatrick_A$ does not seem to be useful.).
+\setcounter{theorem}{2}
+\begin{lemma}
+\label{lem:fitzpatrick-properties}
+Assume $\opA\colon\reals^n\rightrightarrows \reals^n$ is maximal monotone.
+Then 
+\begin{itemize}
+    \item $\fitzpatrick_\opA$ is CCP,
+    \item $\fitzpatrick_\opA(x,u)\ge \langle x,u\rangle$ for all $x,u\in \reals^n$, and
+    \item $\fitzpatrick_\opA(x,u)=\langle x,u\rangle$ if and only if $(x,u)\in \opA$.
+\end{itemize}
+\end{lemma}
+%The third point of Lemma~\ref{lem:fitzpatrick-properties} can be written as $\fitzpatrick_A(x,u)|_{\gra A}=\langle x,u\rangle$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Fitzpatrick function}
+We say $\fitzpatrick_\opA$ is a representative function of $\opA$, since $\fitzpatrick_\opA$ is a convex extension of  $\langle x,u\rangle $ from $\gra \opA $ to $\reals^n\times \reals^n$ that furthermore satisfies $\fitzpatrick_\opA(x,u)\ge \langle x,u\rangle$.
+
+%The Fitzpatrick function is one of the several representative functions used in the monotone operator theory literature.
+
+
+\vspace{0.2in}
+Common technique in monotone operator theory:
+analyze a representative function to conclude results about the original operator.\\
+Analyzing $\fitzpatrick_\opA$, a CCP function, with results from convex analysis is easier than directly considering $\opA$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Fitzpatrick function}
+\textbf{Proof.}
+If $(x,u)\in \opA$, then
+$\langle x-y,u-v\rangle\ge 0$
+for all $(y,v)\in \opA$ by monotonicity,
+and the infimum
+\[
+\inf_{(y,v)\in \opA}\langle x-y,u-v\rangle=0
+\]
+is attained at $(x,u)$.
+So $\fitzpatrick_\opA(x,u)=\langle x,u\rangle$.
+\vspace{0.2in}
+
+Assume $(x,u)\notin \opA$. Then by maximality there exists a $(y,v)\in \opA$ such that 
+$\langle x-y,u-v\rangle<0$.
+Therefore
+\[
+\inf_{(y,v)\in \opA}\langle x-y,u-v\rangle<0
+\]
+and $\fitzpatrick_\opA(x,u)>\langle x,u\rangle$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Fitzpatrick function}
+Define
+\[
+f_{y,v}(x,u)=\langle y,u\rangle+\langle x,v\rangle-\langle y,v\rangle,
+\]
+which is a closed convex function for all $(y,v)\in \opA$.
+Then
+\vspace{-0.05in}
+
+\[
+\epi \fitzpatrick_\opA=\bigcap_{(y,v)\in \opA}\epi f_{y,v}
+\]
+\vspace{-0.1in}
+
+is a closed convex set as it is an intersection of closed convex sets.
+\vspace{0.2in}
+
+Since $\fitzpatrick_\opA(x,u)\ge f_{y,v}(x,u)>-\infty$ for any $(y,v)\in \opA$,
+we have $\fitzpatrick_\opA>-\infty$ always.
+On the other hand, 
+\[
+\fitzpatrick_\opA(x,u)=\langle x,u\rangle <\infty
+\]
+for any $(x,u)\in \opA$. So $\fitzpatrick_\opA$ is proper.
+\qed
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Minty surjectivity theorem}
+The Minty surjectivity theorem is foundational to operator splitting methods as it ensures that methods using resolvents are well defined.
+
+\vspace{0.2in}
+We say $\opI+\opA$ is surjective if $\range (\opI+\opA)=\reals^n$.
+%, i.e., for any $u\in \reals^n$ there is an $x\in \reals^n$ such that $u\in (\opI+\opA)x$.
+If $\opI+\opA$ is surjective, then $\dom \opJ_\opA=\reals^n$.
+\vspace{0.2in}
+
+\setcounter{theorem}{7}
+\begin{theorem}
+%\emph{(Minty surjectivity theorem)}
+\label{thm:minty}
+If $\opA\colon\reals^n\rightrightarrows \reals^n$ is maximal monotone, then $\range(\opI+\opA)=\reals^n$.
+\end{theorem}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Minty surjectivity theorem}
+\textbf{Proof.}
+Want to show $u\in \range (\opI+\opA)$ for any  $u\in \reals^n$ and maximal monotone $\opA$.
+We first establish $0\in \range(\opI+\opA)$ for any maximal monotone $\opA$.
+Then the maximal monotone operator $\opB(x)=\opA(x)-u$ satisfies $0\in \range(\opI+\opB)$,
+which implies $u\in \range(\opI+\opA)$ for any $u\in \reals^d$.
+
+
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Minty surjectivity theorem}
+We now show $0\in \range(\opI+\opA)$.
+Define $(y,v)\in \reals^n\times\reals^n$ with
+\begin{equation*}
+(y,v)=\argmin_{(x,u)\in\reals^n\times\reals^n}\left\{\fitzpatrick_\opA(x,u)+\frac{1}{2}\|x\|^2+\frac{1}{2}\|u\|^2\right\}=\prox_{\fitzpatrick_\opA}(0,0).
+\label{mon-e0}
+\end{equation*}
+This implies 
+\[
+\begin{bmatrix}
+-y\\-v
+\end{bmatrix}\in \partial \fitzpatrick_\opA(y,v).
+\]
+Since $\fitzpatrick_\opA$ is convex, the subgradient inequality tells us
+\[
+\left<
+\begin{bmatrix}
+-y\\-v
+\end{bmatrix},
+\begin{bmatrix}
+x\\u
+\end{bmatrix}
+-
+\begin{bmatrix}
+y\\v
+\end{bmatrix}\right>\le \fitzpatrick_\opA(x,u)-\fitzpatrick_\opA(y,v)
+\qquad
+\forall\,(x,u)\in \reals^n\times\reals^n.
+\]
+By Lemma~\ref{lem:fitzpatrick-properties},
+\[
+\fitzpatrick_\opA(x,u)-\fitzpatrick_\opA(y,v)\le \langle x,u\rangle-\langle y,v\rangle
+\qquad
+\forall\,(x,u)\in \opA.
+\]
+\end{frame}
+
+\begin{frame}
+\frametitle{Minty surjectivity theorem}
+Combining the two inequalities and reorganize to get
+% \[
+% \langle (-y,-v),(x,u)-(y,v)\rangle\le \langle x,u\rangle-\langle y,v\rangle,
+% \]
+% which we reorganize into
+\begin{equation}
+\|y+v\|^2\le \langle x+v,u+y\rangle\qquad\forall\, (x,u)\in \opA.
+\label{mon-e1}
+\end{equation}
+Since $0\le \|y+v\|^2$ and since $\opA$ is maximal monotone, this implies $(-v,-y)\in \opA$.
+By letting $(x,u)=(-v,-y)$ in \eqref{mon-e1}, we get $v=-y$.
+Thus $(y,-y)\in \opA$ and we have
+\[
+0\in (\opI+\opA)(y).
+\]
+\qed
+% Analogously note that \eqref{mon-e0} is  the crux of the proof.
+% The point that establishes surjectivity
+% is obtained as the minimizer of a strongly convex function, which exists.
+\end{frame}
+
+
+
+
+
+\begin{frame}
+\frametitle{Converse of Minty}
+The converse of Theorem~\ref{thm:minty} is true.
+%Theorem~\ref{thm:minty-converse} 
+As a consequence, we can show a monotone operator $\opA\colon\reals^n\rightrightarrows \reals^n$ is maximal if $\dom \opJ_\opA=\reals^n$.
+
+\vspace{0.2in}
+
+\begin{theorem}
+\label{thm:minty-converse}
+If $\opA\colon\reals^n\rightrightarrows \reals^n$ is monotone and $\range(J+\opA)=\reals^n$ for a symmetric positive definite $J\in\reals^{n\times n}$, then $\opA$ is maximal monotone.
+\end{theorem}
+\end{frame}
+
+
+\begin{frame}[plain]
+\frametitle{Converse of Minty}
+\textbf{Proof.}
+First consider the case $J=\opI$.
+Assume $\{(x,u)\}\cup \opA$ is monotone, i.e.,
+\[
+0\le \langle x-z,u-w\rangle \qquad \forall(z,w)\in \opA.
+\]
+To establish maximality, enough to show $(x,u)\in \opA$.
+Since $\range(\opI+\opA)=\reals^n$, there is a $y$ such that $x+u\in (\opI+\opA)y$.
+Let
+\[
+v=x+u-y\in \opA y.
+\]
+Then
+\[
+0\le \langle x-y,u-v\rangle =-\|x-y\|^2=-\|u-v\|^2.
+\]
+So $x=y$ and $u=v$, which implies $(x,u)\in \opA$.
+
+\vspace{0.2in}
+
+When $J\ne \opI$. Then $J^{-1/2}\opA J^{-1/2}$ is monotone and, becuase $J+\opA$ is surjective,
+\[
+\range(\opI+J^{-1/2}\opA J^{-1/2})=\reals^n.
+\]
+This implies $J^{-1/2}\opA J^{-1/2}$ is maximal and so is $\opA$.
+\qed
+\end{frame}
+
+
+
+\section{Maximality and extension theorems}
+\begin{frame}
+\frametitle{Maximality and extensions}
+Let $P$ be a property of an operator such as monotonicity, $\theta$-averagedness, or $L$-Lipschitz continuity.
+We say $\opA\colon\reals^n\rightrightarrows \reals^n$ is ``maximal $P$'' if there is no proper extension $\bar{\opA}$ with property $P$.
+%To clarify, if $\opA$ is already maximal $P$, its maximal $P$ ``extension'' $\bar{\opA}$ is not proper, i.e., $\opA=\bar{\opA}$.
+We now characterize maximal extensions of certain operator classes.
+
+\vspace{0.2in}
+Whether a given operator can be extended while preserving certain properties is a classical question in analysis.
+(E.g., Hahn--Banach and Kirszbraun--Valentine theorems.)
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Maximal monotone extension}
+\setcounter{theorem}{12}
+\begin{theorem}
+\label{thm:monotone-extension}
+A monotone operator has a maximal monotone extension.
+%Let $\opA\colon\reals^n\rightrightarrows \reals^n$ be monotone. Then $\opA$ has a maximal monotone extension $\bar{\opA}$.
+%i.e., there exists a maximal monotone operator $\bar{\opA}\colon\reals^n\rightrightarrows \reals^n$ such that $\gra \opA\subseteq \gra \bar{\opA}$.
+\end{theorem}
+\textbf{Proof.}
+Let $\opA\colon\reals^n\rightrightarrows \reals^n$ be monotone and let
+\[
+\cP=\{\opB\colon\reals^n\rightrightarrows \reals^n\,|\,\opB\text{ is monotone and } \gra\opA\subseteq\gra\opB\},
+\]
+which is non-empty. We impose the partial order on $\cP$ with $\opB_1\preceq \opB_2$ if and only if $\gra \opB_1\subseteq\gra\opB_2$ for all $\opB_1,\opB_2\in P$.
+Every chain $\cC$ in $\cP$ has the upper bound $\bar{\opB}\in \cP$ given by
+\[
+\gra \bar{\opB}=\bigcup_{\opB \in \cC}\gra \opB.
+\]
+By Zorn's lemma, there is a maximal element $\bar{\opA}$ in $\cP$. This element $\bar{\opA}$ extends $\opA$ by definition of $\cP$ and cannot be properly extended as it is maximal in $\cP$.
+\qed
+\end{frame}
+
+\begin{frame}[plain]
+\frametitle{Maximal $\mu$-strongly monotone extension}
+\begin{theorem}
+\label{thm:sm-condition}
+For $\mu>0$, a $\mu$-strongly monotone operator has a maximal $\mu$-strongly monotone extension.
+Furthermore, if $\opA\colon\reals^n\rightrightarrows \reals^n$ is $\mu$-strongly monotone, then $\opA$ is maximal $\mu$-strongly monotone if and only if $\range( \opA)=\reals^n$.
+% \[
+% \langle \opA x-\opA y,x-y\rangle \ge \mu \|x-y\|^2
+% \]
+% and
+\end{theorem}
+\textbf{Proof.}
+Since $\mu$-strong monotonicity of $\opA$ is defined as 
+\[
+\langle \opA x-\opA y,x-y\rangle \ge \mu \|x-y\|^2\qquad\forall\,x,y\in\reals^n,
+\]
+$\opA$ is $\mu$-strongly monotone if and only if $\opB=\opA-\mu\opI$ is monotone.
+
+\vspace{0.05in}
+Extending $\opA$ and $\opB$ are equivalent in the following sense.
+If $\bar{\opA}$ is a $\mu$-strongly monotone extension of $\opA$, then $\bar{\opA}-\mu \opI$ is a monotone extension of $\opB$.
+If $\bar{\opB}$ is a monotone extension of $\opB$, then $\bar{\opB}+\mu \opI$ is a $\mu$-strongly monotone extension of $\opA$.
+By Theorem~\ref{thm:monotone-extension}, $\opB$ has a maximal monotone extension $\bar{\opB}$, and $\opA$ has a maximal $\mu$-strongly monotone extension $\bar{\opB}+\mu \opI$.
+
+\vspace{0.05in}
+
+Moreover, $\opA$ is maximal $\mu$-strongly monotone if and only if $\opB$ is maximal monotone.
+By Theorems~\ref{thm:minty} and \ref{thm:minty-converse}, $\opB$ is maximal monotone if and only if $\range (\opA)=\range (\opB+\mu\opI)=\reals^n$.
+Finally, chaining the equivalences provides the second stated result.
+\qed
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Maximal $\beta$-cocoercive extension}
+\begin{theorem}
+\label{thm:coco-condition}
+Let $\beta>0$.
+A $\beta$-cocoercive operator has a maximal $\beta$-cocoercive extension.
+Furthermore, if $\opA\colon\reals^n\rightrightarrows \reals^n$ is $\beta$-cocoercive, then $\opA$ is maximal $\beta$-cocoercive if and only if $\dom \opA=\reals^n$.
+\end{theorem}
+\textbf{Proof.}
+Note $\opA$ is $\beta$-cocoercive if and only if $\opA^{-1}$ is $\beta$-strongly monotone.
+\vspace{0.1in}
+
+Extending $\opA$ and $\opA^{-1}$ are equivalent in the following sense.
+If $\bar{\opA}$ is a $\beta$-cocoercive extension of $\opA$, then $\bar{\opA}^{-1}$ is a $\beta$-strongly monotone extension of $\opA^{-1}$.
+If $\overline{\opA^{-1}}$ is a $\beta$-strongly monotone extension of $\opA^{-1}$, then $(\overline{\opA^{-1}})^{-1}$ is a $\beta$-cocoercive extension of $\opA$.
+By Theorem~\ref{thm:sm-condition}, $\opA^{-1}$ has a maximal $\beta$-strongly monotone extension $\overline{\opA^{-1}}$, and $\opA$ has a maximal $\beta$-cocoercive extension $(\overline{\opA^{-1}})^{-1}$.
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Maximal $\beta$-cocoercive extension}
+Moreover, $\opA$ is maximal $\beta$-cocoercive if and only if $\opA^{-1}$ is maximal $\beta$-strongly monotone.
+By Theorem~\ref{thm:sm-condition}, $\opA^{-1}$ is maximal $\beta$-strongly monotone if and only if $\range (\opA^{-1})=\reals^n$, which holds if and only if $\dom (\opA)=\reals^n$.
+Finally, chaining the equivalences provides the second stated result.
+\qed
+\vspace{0.2in}
+
+Remember that a $\beta$-cocoercive operators must be single-valued.
+By Theorem~\ref{thm:coco-condition}, [$\opA\colon\reals^n\rightrightarrows \reals^n$ is maximal $\beta$-cocoercive] is equivalent to [$\opA\colon\reals^n\rightarrow \reals^n$ is $\beta$-cocoercive] since $\opA\colon\reals^n\rightarrow \reals^n$ implies $\dom \opA=\reals^n$.
+For the sake of conciseness, we usually avoid the former expression.
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Maximal $L$-Lipschitz extension}
+\begin{theorem}
+\label{thm:Lipschitz-condition}
+Let $L>0$.
+An $L$-Lipschitz operator has a maximal $L$-Lipschitz extension.
+Furthermore, if $\opA\colon\reals^n\rightrightarrows \reals^n$ is $L$-Lipschitz, then $\opA$ is maximal $L$-Lipschitz if and only if $\dom \opA=\reals^n$.
+\end{theorem}
+
+\vspace{0.2in}
+This result is known as the Kirszbraun--Valentine theorem. 
+Proof follows from similar reasoning.
+%We defer the proof to Exercise~\ref{exercise:maximal-nonexpansive}.
+
+\end{frame}
+
+\end{document}

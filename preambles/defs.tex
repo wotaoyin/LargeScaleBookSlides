@@ -1,0 +1,283 @@
+\usepackage{graphicx,amsmath,amssymb,psfrag,mathtools}
+\usepackage{soul}
+\usepackage{amsmath,amsfonts,amsthm,bbm}
+\usepackage{stmaryrd}
+\usepackage{subcaption}
+
+
+
+%Code block environment
+\usepackage{listings}
+
+
+\definecolor{lightgrey}{gray}{0.8}
+\definecolor{medgrey}{gray}{0.6}
+\definecolor{darkgrey}{gray}{0.4}
+\usepackage{xcolor}
+\lstset { %
+    backgroundcolor=\color{black!5}, % set backgroundcolor
+    basicstyle=\ttfamily,
+    showstringspaces=false,
+    commentstyle = \ttfamily,
+    commentstyle=\color{commentgreen}\ttfamily,
+    morecomment=[l][\color{darkgrey}]{//},
+}
+
+
+
+\usepackage{tikz}
+\usetikzlibrary{matrix,chains,positioning,decorations.pathreplacing,arrows}
+\usetikzlibrary{positioning,calc}
+\usepackage{tkz-euclide}
+%\usetkzobj{all}
+
+
+
+
+
+%-------------------------------------------------------------------------------
+%Definition of operator font
+ \usepackage[bb=boondox]{mathalfa}
+%% import \varmathbb without affecting other fonts
+\usepackage{xparse}
+\DeclareFontFamily{U}{ntxmia}{}
+\DeclareFontShape{U}{ntxmia}{m}{it}{<-> ntxmia }{}
+\DeclareFontShape{U}{ntxmia}{b}{it}{<-> ntxbmia }{}
+\DeclareSymbolFont{lettersA}{U}{ntxmia}{m}{it}
+\SetSymbolFont{lettersA}{bold}{U}{ntxmia}{b}{it}
+\ExplSyntaxOn
+\NewDocumentCommand{\varmathbb}{m}
+ {
+  \tl_map_inline:nn { #1 }
+   {
+    \use:c { varbb##1 }
+   }
+ }
+\tl_map_inline:nn { ABCDEFGHIJKLMNOPQRSTUVWXYZ }
+ {
+  \exp_args:Nc \DeclareMathSymbol{varbb#1}{\mathord}{lettersA}{\int_eval:n { `#1+67 }}
+ }
+\exp_args:Nc \DeclareMathSymbol{varbbk}{\mathord}{lettersA}{169}
+\ExplSyntaxOff
+%%
+\makeatletter
+\DeclareFontFamily{U}{tipa}{}
+\DeclareFontShape{U}{tipa}{m}{n}{<->tipa10}{}
+\newcommand{\arc@char}{{\usefont{U}{tipa}{m}{n}\symbol{62}}}%
+
+\newcommand{\arc}[1]{\mathpalette\arc@arc{#1}}
+
+\newcommand{\arc@arc}[2]{%
+  \sbox0{$\m@th#1#2$}%
+  \vbox{
+    \hbox{\resizebox{\wd0}{\height}{\arc@char}}
+    \nointerlineskip
+    \box0
+  }%
+}
+\makeatother
+\newcommand{\opA}{{\varmathbb{A}}}
+\newcommand{\opB}{{\varmathbb{B}}}
+\newcommand{\opC}{{\varmathbb{C}}}
+\newcommand{\opD}{{\varmathbb{D}}}
+\newcommand{\opE}{{\varmathbb{E}}}
+\newcommand{\opF}{{\varmathbb{F}}}
+\newcommand{\opG}{{\varmathbb{G}}}
+\newcommand{\opH}{{\varmathbb{H}}}
+\newcommand{\opI}{{\varmathbb{I}}}
+\newcommand{\opJ}{{\varmathbb{J}}}
+\newcommand{\opK}{{\varmathbb{K}}}
+\newcommand{\opL}{{\varmathbb{L}}}
+\newcommand{\opM}{{\varmathbb{M}}}
+\newcommand{\opN}{{\varmathbb{N}}}
+\newcommand{\opO}{{\varmathbb{O}}}
+\newcommand{\opP}{{\varmathbb{P}}}
+\newcommand{\opQ}{{\varmathbb{Q}}}
+\newcommand{\opR}{{\varmathbb{R}}}
+\newcommand{\opS}{{\varmathbb{S}}}
+\newcommand{\opT}{{\varmathbb{T}}}
+\newcommand{\opU}{{\varmathbb{U}}}
+\newcommand{\opV}{{\varmathbb{V}}}
+\newcommand{\opW}{{\varmathbb{W}}}
+\newcommand{\opX}{{\varmathbb{X}}}
+\newcommand{\opY}{{\varmathbb{Y}}}
+\newcommand{\opZ}{{\varmathbb{Z}}}
+\newcommand{\opZer}{\mathbb{0}}
+%-------------------------------------------------------------------------------
+
+
+
+%-------------------------------------------------------------------------------
+%Definition of other font types
+\newcommand{\va}{{\mathbf{a}}}
+\newcommand{\vb}{{\mathbf{b}}}
+\newcommand{\vc}{{\mathbf{c}}}
+\newcommand{\vd}{{\mathbf{d}}}
+\newcommand{\ve}{{\mathbf{e}}}
+\newcommand{\vf}{{\mathbf{f}}}
+\newcommand{\vg}{{\mathbf{g}}}
+\newcommand{\vh}{{\mathbf{h}}}
+\newcommand{\vi}{{\mathbf{i}}}
+\newcommand{\vj}{{\mathbf{j}}}
+\newcommand{\vk}{{\mathbf{k}}}
+\newcommand{\vl}{{\mathbf{l}}}
+\newcommand{\vm}{{\mathbf{m}}}
+\newcommand{\vn}{{\mathbf{n}}}
+\newcommand{\vo}{{\mathbf{o}}}
+\newcommand{\vp}{{\mathbf{p}}}
+\newcommand{\vq}{{\mathbf{q}}}
+\newcommand{\vr}{{\mathbf{r}}}
+\newcommand{\vs}{{\mathbf{s}}}
+\newcommand{\vt}{{\mathbf{t}}}
+\newcommand{\vu}{{\mathbf{u}}}
+\newcommand{\vv}{{\mathbf{v}}}
+\newcommand{\vw}{{\mathbf{w}}}
+\newcommand{\vx}{{\mathbf{x}}}
+\newcommand{\vy}{{\mathbf{y}}}
+\newcommand{\vz}{{\mathbf{z}}}
+
+\newcommand{\vA}{{\mathbf{A}}}
+\newcommand{\vB}{{\mathbf{B}}}
+\newcommand{\vC}{{\mathbf{C}}}
+\newcommand{\vD}{{\mathbf{D}}}
+\newcommand{\vE}{{\mathbf{E}}}
+\newcommand{\vF}{{\mathbf{F}}}
+\newcommand{\vG}{{\mathbf{G}}}
+\newcommand{\vH}{{\mathbf{H}}}
+\newcommand{\vI}{{\mathbf{I}}}
+\newcommand{\vJ}{{\mathbf{J}}}
+\newcommand{\vK}{{\mathbf{K}}}
+\newcommand{\vL}{{\mathbf{L}}}
+\newcommand{\vM}{{\mathbf{M}}}
+\newcommand{\vN}{{\mathbf{N}}}
+\newcommand{\vO}{{\mathbf{O}}}
+\newcommand{\vP}{{\mathbf{P}}}
+\newcommand{\vQ}{{\mathbf{Q}}}
+\newcommand{\vR}{{\mathbf{R}}}
+\newcommand{\vS}{{\mathbf{S}}}
+\newcommand{\vT}{{\mathbf{T}}}
+\newcommand{\vU}{{\mathbf{U}}}
+\newcommand{\vV}{{\mathbf{V}}}
+\newcommand{\vW}{{\mathbf{W}}}
+\newcommand{\vX}{{\mathbf{X}}}
+\newcommand{\vY}{{\mathbf{Y}}}
+\newcommand{\vZ}{{\mathbf{Z}}}
+
+\newcommand{\cA}{{\mathcal{A}}}
+\newcommand{\cB}{{\mathcal{B}}}
+\newcommand{\cC}{{\mathcal{C}}}
+\newcommand{\cD}{{\mathcal{D}}}
+\newcommand{\cE}{{\mathcal{E}}}
+\newcommand{\cF}{{\mathcal{F}}}
+\newcommand{\cG}{{\mathcal{G}}}
+\newcommand{\cH}{{\mathcal{H}}}
+\newcommand{\cI}{{\mathcal{I}}}
+\newcommand{\cJ}{{\mathcal{J}}}
+\newcommand{\cK}{{\mathcal{K}}}
+\newcommand{\cL}{{\mathcal{L}}}
+\newcommand{\cM}{{\mathcal{M}}}
+\newcommand{\cN}{{\mathcal{N}}}
+\newcommand{\cO}{{\mathcal{O}}}
+\newcommand{\cP}{{\mathcal{P}}}
+\newcommand{\cQ}{{\mathcal{Q}}}
+\newcommand{\cR}{{\mathcal{R}}}
+\newcommand{\cS}{{\mathcal{S}}}
+\newcommand{\cT}{{\mathcal{T}}}
+\newcommand{\cU}{{\mathcal{U}}}
+\newcommand{\cV}{{\mathcal{V}}}
+\newcommand{\cW}{{\mathcal{W}}}
+\newcommand{\cX}{{\mathcal{X}}}
+\newcommand{\cY}{{\mathcal{Y}}}
+\newcommand{\cZ}{{\mathcal{Z}}}
+%-------------------------------------------------------------------------------
+
+
+
+
+%-------------------------------------------------------------------------------
+%% macros for math notions and operators
+\newcommand{\EE}{{\mathbb{E}}}
+\newcommand{\expec}{\mathbb{E}}
+\newcommand{\Prob}{{\mathrm{Prob}}} % probability
+
+\newcommand{\reals}{\mathbb{R}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\complex}{\mathbb{C}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\nats}{\mathbb{N}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\bigO}{\mathcal{O}}
+\newcommand{\order}[1]{{\mathcal{O}\left(#1\right)}}
+\renewcommand{\SS}{{\mathbb{S}}}
+\newcommand{\SSp}{\mathbb{S}_{+}}
+\newcommand{\SSpp}{\mathbb{S}_{++}}
+\newcommand{\sign}{\mathrm{sign}}
+\newcommand{\vzero}{\mathbf{0}}
+\newcommand{\vone}{{\mathbf{1}}}
+
+\renewcommand{\Re}{\operatorname{Re}} 	%Real part
+\renewcommand{\Im}{\operatorname{Im}}	%imaginary part
+
+%\newcommand{\supp}{{\mathrm{supp}}} % support
+\newcommand{\range}{\mathrm{range}\,} % domain
+\newcommand{\tr}{{\mathrm{tr}}} % trace
+%-------------------------------------------------------------------------------
+
+
+
+
+
+%-------------------------------------------------------------------------------
+%% Theorem definitions
+\setbeamertemplate{theorems}[ams style] 
+\newtheorem*{theorem*}{Theorem}
+%\newtheorem{lemma}{Lemma}    % already provided by amsthm
+\newtheorem{proposition}{Proposition}
+%\newtheorem{proof}{Proof}  % already provided by amsthm
+
+
+%-------------------------------------------------------------------------------
+%% operator and convex analysis definitions
+
+\newcommand*{\fix}{\mathrm{Fix}\,}
+\newcommand*{\zer}{\mathrm{Zer}\,}
+\newcommand*{\gra}{\mathrm{Gra}\,}
+\newcommand{\prox}{\mathrm{Prox}}
+\newcommand{\proj}{\Pi}
+\newcommand{\aff}{\mathrm{aff}\,}    %affine hull
+\newcommand{\intr}{\mathrm{int}\,}   %interior
+\newcommand{\relint}{\mathrm{ri}\,}  %relative interior
+\newcommand{\dom}{\mathrm{dom}\,} % domain
+\newcommand{\epi}{\mathrm{epi}\,} % epigraph
+\newcommand{\dist}{\mathrm{dist}}
+\newcommand{\lagrange}{\mathbf{L}}  %saddle function
+\newcommand{\fitzpatrick}{\mathbf{F}}   %Fitzpatrick function
+\newcommand{\vecdelay}{\boldsymbol{d}}   %vector delay
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+%-------------------------------------------------------------------------------
+%SRG definitions
+\newcommand{\ereal}{\overline{\mathbb{R}^2}}
+\newcommand{\ecomplex}{\overline{\mathbb{C}}}
+\newcommand{\binfty}{{\boldsymbol \infty}}
+\newcommand{\rarc}{\mathrm{Arc}^+}
+\newcommand{\larc}{\mathrm{Arc}^-}
+
+
+%-------------------------------------------------------------------------------
+
+
+
+
+%-------------------------------------------------------------------------------
+%Miscellaneous Stuff
+%% sequences
+\newcommand{\itom}{_{i=1}^{m}}
+\newcommand{\ieqm}{i=1,\dots,m}
+
+% use \numberthis to add an equation number in align*
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}

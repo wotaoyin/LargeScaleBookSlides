@@ -1,0 +1,82 @@
+\mode<presentation>
+{
+\usetheme{default}
+}
+\setbeamertemplate{navigation symbols}{}
+\usecolortheme[rgb={0.13,0.28,0.59}]{structure}
+\setbeamertemplate{itemize subitem}{--}
+\setbeamertemplate{frametitle} {
+	\begin{center}
+	  {\large\bf \insertframetitle}
+	\end{center}
+}
+
+\newcommand\footlineon{
+  \setbeamertemplate{footline} {
+    \begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,leftskip=.8cm,rightskip=.6cm]{structure}
+      \footnotesize \insertsection
+      \hfill
+      {\insertframenumber}
+    \end{beamercolorbox}
+    \vskip 0.45cm
+  }
+}
+\footlineon
+
+
+\newcommand\footlineoff{
+  \setbeamertemplate{footline} {
+    \begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,leftskip=.8cm,rightskip=.6cm]{structure}
+      \footnotesize 
+      \hfill
+      {\insertframenumber}
+    \end{beamercolorbox}
+    \vskip 0.45cm
+  }
+}
+
+
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
+
+\AtBeginSection[] 
+{ 
+	\begin{frame}<beamer> 
+		\frametitle{Outline} 
+		\tableofcontents[currentsection,currentsubsection] 
+	\end{frame} 
+} 
+
+%% wotao's preference
+
+        % itemize, black bullet, %150 spacing between items using "witemize"
+        \newenvironment{witemize}{\itemize\addtolength{\itemsep}{0.3\baselineskip}}{\enditemize}
+
+\iffalse
+        % \setbeamertemplate{itemize items}[square]
+        \setbeamertemplate{itemize items}{\textbullet}
+        \setbeamercolor{itemize item}{fg=black}
+        \setbeamercolor{itemize subitem}{fg=black}
+        \setbeamercolor{itemize subsubitem}{fg=black}
+        \setbeamercolor{enumerate item}{fg=black}
+        \setbeamercolor{enumerate subitem}{fg=black}
+        \setbeamercolor{enumerate subsubitem}{fg=black}
+        \setbeamertemplate{itemize/enumerate body begin}{\normalsize}
+        \setbeamertemplate{itemize/enumerate subbody begin}{\normalsize}
+        \setbeamertemplate{itemize/enumerate subsubbody begin}{\normalsize}
+
+        % itemize enumerate use normal sized texts
+        \setbeamertemplate{itemize/enumerate body begin}{\normalsize}
+        \setbeamertemplate{itemize/enumerate subbody begin}{\normalsize}
+        \setbeamertemplate{itemize/enumerate subsubbody begin}{\normalsize}
+
+        % block, black over gray with no shadow
+        \setbeamertemplate{blocks}[rounded][shadow=false]
+        \setbeamercolor{block title}{fg=black,bg=gray!40}
+        \setbeamercolor{block body}{fg=black,bg=gray!10}
+\fi

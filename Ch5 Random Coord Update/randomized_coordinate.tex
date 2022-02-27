@@ -1,0 +1,1170 @@
+\documentclass[10pt,mathserif]{beamer}
+
+\input{../preambles/defs.tex}
+\input{../preambles/beamer_setting}
+\input{../preambles/affiliation}
+
+\title{\large \bfseries Randomized Coordinate Update Methods}
+
+\begin{document}
+
+\frame{
+\thispagestyle{empty}
+\titlepage
+}
+
+
+
+\section{Randomized coordinate fixed-point iteration}
+
+
+\begin{frame}[fragile,plain]
+\frametitle{Coordinate partitioning}
+Partition $x\in \reals^n$ into $m$ non-overlapping blocks of sizes $n_1,\dots,n_m$.
+\medskip\pause 
+
+Write\footnote{some researchers would write $x=[x_1;\dots; x_m]$ instead} $x=(x_1,\dots,x_m)$,
+so $x_i\in \reals^{n_i}$.
+\medskip
+
+Partition $\opT\colon\reals^n\rightarrow\reals^n$ into $(\opT(x))_i\in \reals^{n_i}$ and define $\opT_i(x)$ as follows:
+\[
+\opT(x)=\begin{bmatrix}
+(\opT(x))_1\\
+\vdots\\
+(\opT(x))_i\\
+\vdots\\
+(\opT(x))_m
+\end{bmatrix}
+\qquad
+% \]
+% \pause Define
+% \begingroup\makeatletter\def\f@size{8}\check@mathfonts
+% \[
+\begingroup
+\renewcommand*{\arraystretch}{.8}
+\opT_i(x)=\begin{bmatrix}
+x_1\\
+\vdots\\
+x_{i-1}\\
+(\opT(x))_i\\
+x_{i+1}\\
+\vdots\\
+x_m
+\end{bmatrix},
+\endgroup
+\]
+% \endgroup
+i.e., $\opT_i$ is $\opT$ on the $i$\nobreakdash-th block and is identity on the other blocks.
+
+\medskip
+We say ``block''  and ``coordinate'' interchangeably.
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Coordinate-update fixed-point iteration}
+For $\opT\colon\reals^n\rightarrow\reals^n$, consider 
+\begin{align*}
+\begin{array}{ll}
+\underset{x\in\reals^n}{\mbox{find}}&
+x = \opT x.
+\end{array}
+\end{align*}
+\vspace{0.2in}
+
+Coordinate-update fixed-point iteration (C-FPI) is
+\begin{align*}
+\text{select}&\,\,\,i(k) \in \{1,\dots,m\},\\
+%i(k)&\sim \mathrm{Uniform}(\{1,2,\dots,n\})\\
+% &x^{k+1}_i = \begin{cases}
+%               T_{i}(x^k), & \mbox{if } i=i(k) \\
+%               T_i, & \mbox{otherwise},
+%             \end{cases}
+%             \qquad \text{for}~i \in[m].
+x^{k+1}&= \opT_{i(k)}(x^k).
+\end{align*}
+At the $k$\nobreakdash-th iteration, C-FPI updates only the $i(k)$\nobreakdash-th block.
+\medskip
+
+Specifying the selection rule for $i(k)$ fully specifies the method.
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Block selection rules}
+There are many ways to select $i(k)$ with different advantages and disadvantages.
+%and different rules have different convergence properties and can take advantage of different problem structures and computational setups.
+
+\vspace{0.2in}
+
+Common selection rules:
+\begin{itemize}
+\item\pause
+Cyclic rule. Select the blocks in a fixed cyclic order.
+\item\pause
+Cyclic shuffle rule. Shuffle the ordering of blocks and select each of them sequentially, and repeat. A.k.a. random sample without replacement.
+\item\pause
+Essential cyclic rule. Each block appears once or more in each ``cycle''. (Both cyclic and cyclic shuffle rules are special cases.)
+\item\pause
+Greedy rule. Select block that leads to the most immediate progress, measured in many different ways.
+
+\item\pause
+Randomized rule. Select blocks randomly. Each selection is independent of others. A.k.a. random sample with replacement.
+\end{itemize}
+
+%The \emph{essentially cyclic rule} selects every coordinate at least once every fixed number of iterations. The \emph{randomized rule} selects a coordinate randomly, where different coordinates may be selected for a different probability. The \emph{greedy rule} selects a coordinate that leads to the greatest progress, where the progress can be measured in many different ways. %There combinations of conditions and rules that can be proved to work, and the list still grows.
+\end{frame}
+
+\begin{frame}
+\frametitle{Randomized coordinate-update fixed-point iteration}
+
+We focus on the randomized rule (i.e. select $i(k)\in\{1,\dots,m\}$ independently uniformly at random) since its analysis is simplest.
+
+\vspace{0.2in}
+
+We get randomized coordinate-update fixed-point iteration (RC-FPI):
+\begin{align*}
+i(k)&\sim \text{IID Uniform}\{1,\dots,m\}\\
+x^{k+1}&= \opT_{i(k)}(x^k).
+\end{align*}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Randomized coordinate-update fixed-point iteration}
+
+\setcounter{theorem}{1}
+\begin{theorem}
+Assume $\opT \colon\reals^n\rightarrow\reals^n$ is $\theta$-averaged with $\theta\in(0,1)$ and $\fix \opT \ne \emptyset$.
+Assume the random indices $i(0),i(1),\ldots\in \{1,\dots,m\}$ are i.i.d. with uniform probability.
+Then $x^{k+1}=\opT _{i(k)}x^k$
+with any starting point $x^0\in \reals^n$
+converges to one fixed point with probability 1, i.e., the event
+\[
+x^k\rightarrow x^\star
+\]
+holds 
+with probability 1 for some $x^\star\in \fix \opT$.
+The quantities
+$ \expec\, \dist^2(x^{k},\fix \opT )$ and 
+% $\expec\|\opT x^{k}-x^k\|^2$, and
+$\expec\|x^{k}-x^\star\|^2$  for any $x^\star\in \fix \opT $ decrease monotonically with $k$.
+Finally, we have
+\[
+\dist(x^{k},\fix \opT )\rightarrow 0
+\]
+with probability 1.
+% and
+% \begin{align*}
+% \expec\|x^{k+1}-x^k\|^2\le \frac{\theta m}{(k+1)(1-\theta)}\dist^2(x^{0},\fix \opT ).
+% \end{align*}
+% \vspace{-0.2in}
+\end{theorem}
+\end{frame}
+\begin{frame}
+\frametitle{Prepare to prove Theorem 2}
+Proving Theorem 2 requires the following standard result from probability theory.
+\begin{theorem*}
+[supermartingale convergence theorem]
+% Let $V^k$ and $S^k$ be $\mathcal{F}_k$-measurable random variables satisfying $V^k\ge 0$ and $S^k\ge 0$ almost surely for $k=0,1,\dots$.
+Let $(V^k)_{k=0,1,\dots}$ and $(S^k)_{k=0,1,\dots}$ be two sequences of random variables satisfying $V^k\ge 0$ and $S^k\ge 0$ almost surely for $k=0,1,\dots$.
+Assume 
+\[
+\expec\left[V^{k+1}\,|\,V^0,\dots,V^k\right]\le V^k - S^k
+\]
+holds for $k=0,1,\dots$.
+Then
+\begin{enumerate}
+    \item $\sum^\infty_{k=0}S^k<\infty$
+    \item $V^k\rightarrow V^\infty$
+\end{enumerate}
+hold with probability 1.
+(Note that the limit $V^\infty$ is a random variable.)
+\end{theorem*}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Prepare to prove Theorem 2}
+Define $\opS $ with $\opT  = \opI  - \theta \opS $ and $\opS _i$ with $\opT _i=\opI -\theta \opS _i$.
+So we have
+\begingroup\makeatletter\def\f@size{8}\check@mathfonts
+\[
+\begingroup
+\renewcommand*{\arraystretch}{.8}
+\opS _i(x)=
+\begin{bmatrix}
+0\\
+\vdots\\
+0\\
+(\opS (x))_i\\
+0\\
+\vdots\\
+0
+\end{bmatrix}
+\endgroup
+\]
+\endgroup
+for $i=1,\dots,m$, and $\sum_{i=1}^m \opS_i = \opS$.
+
+% Define $\opS _i$ such that
+% \begin{align*}
+%   \opT _ix^k = x^k - \theta \opS _i(x^k)
+% \end{align*}
+% for all $i\in [m]$.
+
+\medskip\pause
+
+Alternately express $x^{k+1}=\opT _{i(k)}x^k$ as
+\begin{align*}
+  x^{k+1}&= x^k - \theta \opS _{i(k)}x^k.
+\end{align*}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Prepare to prove Theorem 2}
+Fact: $\opT $ is $\theta$-averaged if and only if $\opS $ is $(1/2)$-cocoercive. Proof:
+\begin{align*}
+\opT \text{ is $\theta$-averaged}
+\quad&\Leftrightarrow\quad
+\frac{1}{\theta}\opT -\left(\frac{1}{\theta}-1\right)\opI \text{ is nonexpansive}\\
+&\Leftrightarrow\quad
+\opI -\opS  \text{ is nonexpansive}\\
+&\Leftrightarrow\quad
+\|x-\opS x-y+\opS y\|^2\le \|x-y\|^2\quad\forall\, x,y\in \reals^n\\
+&\Leftrightarrow\quad
+\frac{1}{2}\|\opS x-\opS y\|^2\le \langle x-y,\opS x-\opS y\rangle\quad\forall\, x,y\in \reals^n\\
+&\Leftrightarrow\quad
+\opS \text{ is $(1/2)$-cocoercive}.
+\end{align*}
+\pause Clearly, $\fix\opT=\zer\opS$.
+For any $x^\star\in \fix \opT =\zer\opS$ and $x\in \reals^n$,
+\begin{align}\label{eq:Rcocoer}
+\frac{1}{2}\|\opS  x\|^2\le   \langle \opS  x, x-x^\star\rangle
+\end{align}
+\end{frame}
+
+\begin{frame}
+\frametitle{Prepare to prove Theorem 2}
+$x^{k+1}$ is a random variable depending on $i(k),i(k-1),\dots,i(0)$.
+\\
+ $x^0$ is arbitrary but not random.
+Write $\EE$ for the full expectation.
+Write $\EE_k$ for the conditional expectation with respect to $i(k)$ conditioned on the past random variables $i(k-1),i(k-2),\dots,i(0)$.
+%The law of total expectation states that $\EE\big[\EE_k[X]\big] = \EE[X]$, if $X$ is a random variable such that $\EE[X]$ is well-defined.
+%Then $\EE\big[\EE_k[X]\big] = \EE[X]$ by the law of total expectation.
+
+\vspace{0.2in}\pause
+Under these definitions,  $\EE_k[x^k] = x^k$ and
+\begin{align}
+  \EE_{k} [\opS_{i(k)}x^k] & = \sum_{i=1}^m \frac{1}{m}\opS_ix^k= \frac{1}{m} \opS x^k, \label{eq:RiR} \\
+  \EE_{k} \|\opS_{i(k)}x^k\|^2 & = \sum_{i=1}^m \frac{1}{m}\|\opS_ix^k\|^2 = \frac{1}{m} \|\opS x^k\|^2. \label{eq:RiR2}
+\end{align}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Theorem 2}
+\textbf{Stage 1.}
+For any $x^\star\in\fix \opT$, 
+\begin{align*}
+  \|x^{k+1} - x^\star\|^2 & = \|x^k - \theta \opS_{i(k)}x^k - x^\star\|^2 \nonumber\\
+  & = \|x^k - x^\star\|^2 - 2\theta\langle \opS_{i(k)}x^k ,x^k - x^\star\rangle + \theta^2 \|\opS_{i(k)}x^k\|^2.
+\end{align*}
+%using the formula of $x^{k+1}$, we get
+Take conditional expectation $\EE_k$ and use \eqref{eq:RiR} and \eqref{eq:RiR2}:
+\begin{align*}
+  \EE_k \|x^{k+1} - x^\star\|^2 &  = \|x^k - x^\star\|^2 - 2\theta\langle \EE_k [\opS_{i(k)}x^k] ,x^k - x^\star\rangle + \theta^2 \EE_k\|\opS_{i(k)}x^k\|^2\nonumber\\
+  & = \|x^k - x^\star\|^2 - \frac{2\theta}{m}\langle \opS x^k,x^k - x^\star\rangle + \frac{\theta^2}{m}\|\opS x^k\|^2\\
+  & \le\|x^k - x^\star\|^2 - (1-\theta)\frac{\theta}{m}\|\opS x^k\|^2, \numberthis \label{eq:condmon}
+\end{align*}
+where the inequality follows from \eqref{eq:Rcocoer}.
+\vspace{0.2in}
+
+So $(\|x^{k} - x^\star\|^2)_{k=0,1,\ldots}$ a nonnegative supermartingale.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Theorem 2}
+Take the full expectation on both ends of \eqref{eq:condmon}:
+\begin{align*}
+  \EE\|x^{k+1} - x^\star\|^2 & \le \EE\|x^{k} - x^\star\|^2 - (1-\theta)\frac{\theta}{m}\EE\|\opS x^{k}\|^2.
+\end{align*}
+\vspace{0.2in}
+
+Therefore, $\EE\|x^{k} - x^\star\|^2$ decreases monotonically with $k$ and, by minimizing over $x^\star \in \fix \opT$, so does $\EE \,\dist^2(x^{k},\fix \opT)$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Theorem 2}
+\textbf{Stage 2.}
+We prove convergence of the iterates.
+Apply the \emph{supermartingale convergence theorem}
+%of \cite[Theorem 1]{RobbinsSiegmund1985_ConvergenceTheorem},
+to \eqref{eq:condmon} to get:
+\begin{enumerate}
+  \item[(i)] $\sum_{k=0}^\infty\|\opS x^k\|^2 < \infty$ and 
+  \item[(ii)] $\lim_{k\rightarrow\infty}\|x^k - x^\star\|$ exists
+%  \item $x^{k}$ is bounded,
+\end{enumerate}
+ with probability 1.
+Note (i) implies $\|\opS x^k\|^2\rightarrow 0$ and (ii) implies $x^{k}$ is bounded with probability 1.
+
+\vspace{0.2in}\pause
+For all $x^\star\in \fix\opT$, $\lim_{k\rightarrow\infty}\|x^k - x^\star\|$ exists with probability 1.
+Apply Proposition~\ref{prp:prob1} (stated and proved later) to conclude  with probability 1, $\lim_{k\rightarrow\infty}\|x^k - x^\star\|$ exists for all $x^\star\in \fix \opT$.
+%The distinction between statements 1 and 2 of Proposition~\ref{prp:prob1} becomes necessary when $\fix T$ is not a singleton and therefoer has uncountably many fixed points.
+Apply the same argument of Theorem~1 to get: with probability 1, $x^k\rightarrow x^\star$.
+% is a random variable that depends on $x^\star$ and the random indices $i(0),i(1),\dots$.
+\qed
+\end{frame}
+
+\begin{frame}[plain]
+\frametitle{Measurability argument}
+%Proposition~\ref{prp:prob1} is subtle.
+In the proof, we first choose an arbitrary $x^\star\in \fix \opT$ and then apply the supermartingale convergence theorem, so [$\lim_{k\rightarrow\infty}\|x^k - x^\star\|$ holds with probability 1] applies to each $x^\star$.
+\medskip
+
+We need a stronger statement before we can the argument of Theorem~1: [$\lim_{k\rightarrow\infty}\|x^k - x^\star\|$ for all $x^\star\in \fix \opT$] holds with probability 1.
+\medskip\pause
+
+The subtlety: 
+\begin{enumerate}
+    \item the intersection of \emph{countably many} measure-1 sets has measure 1;
+    \item the intersection of \emph{uncountably many} measure-1 sets has measure \emph{less than or} equal to 1.
+\end{enumerate}
+As set $\fix \opT$ is possibly uncountable, case 2 is applicable.
+\medskip\pause
+
+Proposition 1 (next slide) shows the stronger statement actually holds.
+\end{frame}
+
+\begin{frame}{Proposition 1}
+%\setcounter{proposition}{1}
+\begin{proposition}\label{prp:prob1}
+Let $Y\subseteq \reals^n$ and let $x^0,x^1,\dots$ be a random sequence. Then statement 1 implies statement 2.
+\begin{enumerate}
+  \item For all $y\in Y$ \emph{[with probability 1, $\lim_{k\rightarrow\infty}\|x^k - y\|$ exists]}.
+  \item With probability 1 \emph{[for all $y\in Y$, $\lim_{k\rightarrow\infty}\|x^k - y\|$ exists]}.
+\end{enumerate}
+\end{proposition}
+\textbf{Proof outline.}
+(i) $Y\subseteq \reals^n$ is separable (i.e., has a countable dense subset), (ii) sequence of functions $\{\|x^k-\cdot \|\}_{k\in \mathbb{N}}$ has a limit on the countable dense subset of $Y$, and (iii) if an equicontinuous sequence of functions has limits on the dense subset of $Y$, limits exist on all of $Y$.\qed 
+\medskip
+
+Understand ``equicontinuous'' as ``uniformly (over sequence) uniformly (over function domain) continuous''
+\end{frame}
+
+
+
+
+\section{Coordinate and extended coordinate friendly operators}
+
+\begin{frame}
+\frametitle{Coordinate friendly operators}
+
+While Theorem~2 is true, RC-FPI is useful only if it is computationally efficient.
+\medskip
+
+RC-FPI is computationally effective when $\opT$ is coordinate friendly (defined below) or extended coordinate friendly (defined later).
+
+\vspace{0.2in}\pause
+
+Let $z=(z_1,\dots,z_m)\in\reals^n$.
+% and $z_i\in\reals^{n_i}$.
+Then $x\mapsto z$ is coordinate friendly if
+\[
+%\frac{m}{p}
+\max_{i=1,\dots,m}
+\mathcal{F}[x\mapsto z_i]
+\ll
+\mathcal{F}[x\mapsto z].
+\]
+%More precisely, a method is coordinate friendly if for all $i=1,\dots,m$ there is an algorithm for $x\mapsto y_i$ that is much faster than the serial algorithms for $x\mapsto y$.
+(Meaning of $\ll$ depends on context.)
+%\[
+%\mathcal{F}[x\mapsto y_i]
+%\sim \frac{C}{m}\mathcal{F}[x\mapsto \{y_1,\dots,y_m\}]
+%\quad
+%\text{ for }i=1,\dots,m
+%\]
+%for some $C>0$ not too large, we safely say the method is coordinate friendly.
+%Again, some authors use the terminology `block coordinate friendly' and reserve `coordinate friendly' for when $n_1=\dots=n_m=1$, but we do not make this distinction.
+
+\vspace{0.2in}
+$\opT$ is coordinate friendly if  $x\mapsto \opT x$ is coordinate friendly.
+
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Coordinate friendly $\Rightarrow$ parallelizable}
+If $x\mapsto z$ is coordinate friendly, then for $p\ge m$
+\[
+\mathcal{F}_p[x\mapsto 
+z]
+%\{z_1,\dots,z_m\}]
+=
+%\frac{m}{p}
+\max_{i=1,\dots,m}
+\mathcal{F}[x\mapsto z_i]
+\ll
+\mathcal{F}[x\mapsto 
+z].
+%\{z_1,\dots,z_m\}]
+\]
+So $x\mapsto z$ is parallelizable.
+
+
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Affine operators}
+Affine operator $\opT x = Ax+b$, where $A\in \reals^{n\times n}$ and $b\in \reals^n$, is coordinate friendly if $n_i\ll n$ for $i=1,\dots,m$, since
+\begin{gather*}
+ \mathcal{F}[x\mapsto \opT_i x]\sim 2nn_i
+ \quad\ll\quad
+\mathcal{F}[x\mapsto \opT x]\sim 2n^2.
+\end{gather*}
+\end{frame}
+% is CF since $\mathcal{F}[x\mapsto T_i x]=m$ and $\mathcal{F}[x\mapsto Tx]=m^2$.
+
+
+% For example, $x^{k+1}=x^k-Mx^k$, where $M\in \reals^{n\times n}$ is coordinate friendly, since
+
+\begin{frame}
+\frametitle{Separable operators}
+%Let $n_1+\dots+n_m=n$ and write $\vx=(x_1,\dots,x_m)$ where $x_i\in \reals^{n_i}$ for $\ieqm$.
+$\opT\colon\reals^n\rightarrow \reals^n$ is a separable operator if
+\[
+\opT(x)=(\opU_1(x_1),\dots,\opU_m(x_m)),
+\]
+where $\opU_i\colon\reals^{n_i}\rightarrow\reals^{n_i}$ for $\ieqm$.
+Separable operators are coordinate friendly if $\max_{i=1,\dots,m}\mathcal{F}[x_i\mapsto \opU_i(x_i)]\ll\mathcal{F}[x\mapsto \opT(x)]$.
+
+\vspace{0.2in}
+Common example: multiplication by a (block) diagonal matrix.
+
+\vspace{0.2in}
+$f\colon\reals^n\rightarrow \overline{\reals}$ is a separable function if
+\begin{align*}
+  f(x)  = \sum\itom f_i(x_i),
+\end{align*}
+where $f_i\colon\reals^{n_i}\rightarrow \overline{\reals}$ for $\ieqm$.
+If $f$ is separable and differentiable, then $\nabla f$ is separable.
+If $f$ is separable and CCP, then $\prox_{f}$ is separable.
+
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Separable operators}
+A separable constraint is of the form
+\begin{align*}
+x_i\in C_i\quad
+\text{ for }
+  \ieqm.
+\end{align*}
+Projection onto a separable constraint is separable.
+
+\vspace{0.2in}
+
+Common example: box constraint
+\begin{align*}
+  %a \le x \le b ~~~\text{or}~~~
+  a_i\le x_i \le b_i \quad
+\text{ for }\ieqm.
+\end{align*}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Extended coordinate-friendly}
+$\opT$ is extended coordinate-friendly if there is an auxiliary quantity $y(x)$ such that
+\begin{align*}
+    \max_{i=1,\dots,m}\cF\left[\{x,y(x)\}\mapsto \{\opT_ix, y(\opT_i x)\}\right] \ll\cF\left[x\mapsto \opT x\right].
+\end{align*}
+
+In other words, computing $\opT_i(x)$ is efficient if $y(x)$ is maintained.
+\end{frame}
+
+
+\begin{frame}[plain]
+\frametitle{More coordinate notation}
+%Partition $x\in \reals^n$ into $m$ (non-overlapping) blocks of size $n_1,\dots,n_m$, so $n=n_1+\dots+n_m$.
+%Write $x=(x_1,\dots,x_m)$, so $x_i\in \reals^{n_i}$ for $i=1,\dots,m$.
+Use notation $x=(x_1,\dots,x_m)$ with $x_i\in \reals^{n_i}$. For $A\in \reals^{r\times n}$, write
+\[
+A_{:,i}\in \reals^{r\times n_i}
+\]
+for the submatrix, i.e.,
+\[
+A=\begin{bmatrix}
+A_{:,1}&\cdots&A_{:,m}
+\end{bmatrix}
+\]
+%Note that $A_{i,:}$ would not make sense.
+%Write $A^\intercal_{:,i}=(A_{:,i})^\intercal\in \reals^{n_i\times r}$ for $i=1,\dots,m$.
+and
+\[
+Ax=A_{:,1}x_{1}+\dots+A_{:,m}x_{m}.
+\]
+When $f$ is differentiable, write
+\[
+\nabla f(x)=
+\begin{bmatrix}
+\nabla_1 f(x)\\
+\vdots\\
+\nabla_m f(x)
+\end{bmatrix}.
+\]
+\end{frame}
+
+\begin{frame}
+\frametitle{Example: Gradient descent on least squares}
+%\begin{example}
+Consider
+\begin{align*}
+\underset{x\in\reals^n}{\mbox{minimize}}
+\quad \frac{1}{2}\|Ax-b\|^2,
+\end{align*}
+where $A\in \reals^{r\times n}$ and $b\in \reals^r$, and
+\[
+\opT(x)=x-\alpha A^\intercal(Ax-b).
+\]
+
+\vspace{0.2in}
+
+$\opT$ is parallelizable, \emph{not} coordinate friendly, but extended coordinate friendly.
+\end{frame}
+
+
+\begin{frame}
+%\frametitle{Example: Gradient descent on least squares}
+% parallel implementations corresponding to $A^\intercal(Ax^k-b)$ are more efficient, and we have
+Evaluation of $\opT$ costs
+\[
+\cF[x\mapsto \opT x]=\mathcal{O}(rn).
+\]
+
+\vspace{0.2in}
+Parallelizable (assuming $p<\min\{r,n\}$):
+\begin{align*}
+\mathcal{F}_p[x\mapsto \opT x]
+&=
+\mathcal{F}_p[\{A,x\}\mapsto Ax]
++
+\mathcal{F}_p[\{A^\intercal,Ax\}\mapsto A^\intercal(Ax)]\\
+&= \order{rn/p}
+\end{align*}
+%Define $\opT_i$ such that
+%\begin{align*}
+%  \opT_i x = (\opT x)_i=x_i-\alpha A^\intercal_{:,i}(Ax-b)
+%\end{align*}
+\medskip\pause
+
+Not coordinate friendly:
+\begin{align*}
+\cF[x\mapsto \opT_i x]
+&=\cF[x\mapsto Ax] + \cF[ Ax\mapsto \opT_i x]\\
+&=\order{rn}+\order{rn_i}\\
+&=\order{rn}
+\end{align*}
+\end{frame}
+
+
+\begin{frame}[plain]
+%\frametitle{Example: Gradient descent on least squares}
+
+However, extended coordinate friendly with auxiliary quantity $Ax$:
+\[
+\mathcal{F}\left[
+\{x,Ax\}\mapsto\{\opT _ix,A(\opT _ix)\}
+\right]=\mathcal{O}(rn_i)
+\]
+if we use the formula
+\begin{gather*}
+A(\opT_ix)
+%=Ax+A(\opT _ix-x)
+=Ax+A_{:,i}((\opT x)_i-x_i).
+\end{gather*}
+\medskip\pause
+
+Therefore the C-FPI with $\opT$
+\begin{align*}
+%i(k)&\sim \text{IID Uniform}\{1,\dots,p\}\\
+x^{k+1}_{i(k)}&=x_{i(k)}^k-\alpha A^\intercal_{:,i(k)}(y^k-b)\\
+x^{k+1}_{j}&=x_{j}^k\qquad\text{for } j\neq i(k)\\
+y^{k+1}&=y^k+A_{:,i(k)}(x^{k+1}_{i(k)}-x_{i(k)}^k)
+\end{align*}
+costs $\mathcal{O}(rn_{i(k)})$ flops per iteration.
+% by maintaining the auxiliary quantity $Ax^k-b$.
+($x^{k+1}_{j}=x_{j}^k$ costs no operations.)\\
+Initialize $x^0=0$ and $y=Ax^0=0$.
+\end{frame}
+
+\begin{frame}
+%\frametitle{Example: Gradient descent on least squares}
+If $r \le n$ or $r \sim n$, %another approach of 
+%precomputing $A^\intercal A$ and $A^\intercal b$ and
+using $\opT(x)=x-\alpha ((A^\intercal A)x-A^\intercal b)$ is not effective.
+
+\medskip
+Precomputing
+\[
+\cF[\{A,b\}\mapsto \{A^\intercal A,A^\intercal b\}]=\order{rn^2}
+\]
+can be prohibitively expensive when $r \ll n$, and
+\[
+\cF[\{x^k,A^\intercal A,A^\intercal b\}\mapsto x^{k+1}_{i}]=\order{nn_{i}},
+\]
+is larger than $\order{rn_{i}}$.
+
+\medskip\pause
+If $r \gg n$ and precomputing $A^\intercal A$ is feasible, then 
+\[
+\opT(x) = (\opI - \alpha A^\intercal A)x +\alpha A^\intercal b
+\]
+is coordinate friendly.
+\end{frame}
+
+\section{Examples}
+
+\begin{frame}
+\frametitle{Example: Coordinate gradient descent}
+Consider 
+\begin{align*}
+\begin{array}{ll}
+\underset{x\in \reals^n}{\mbox{minimize}}
+  &f(x),
+  \end{array}
+\end{align*}
+where $f$ is differentiable.
+RC-FPI applied to $\opI - \alpha \nabla f$
+\begin{align*}
+  x^{k+1}_{i(k)} & = x^{k}_{i(k)} - \alpha \nabla_{i(k)}f(x^{k}),
+  %x^{k+1}_{j} &= x_j^k\quad\text{for } j\neq i(k),
+\end{align*}
+is randomized/stochastic coordinate gradient method or randomized/stochastic coordinate gradient descent.
+Converges if a minimizer exists, $f$ is $L$-smooth, and $\alpha\in (0,2/L)$.
+
+\end{frame}
+
+\begin{frame}
+%\frametitle{Example: Coordinate gradient descent}
+In general, $\opI - \alpha \nabla f$ may not be extended coordinate friendly.
+
+\medskip
+
+However, the following machine learning setup is extended coordinate friendly
+\[
+  f(x)  =\sum_{j=1}^{r} \ell_j(a_j^\intercal x - b_j),
+\]
+where $a_1,\dots,a_r\in \reals^n$, $b_1,\dots,b_r\in \reals$, and $\ell_1,\dots,\ell_r$ are differentiable CCP functions on $\reals$.
+%For simplicity, Consider the case where all blocks are single coordinates, i.e., $m=n$ and $n_1=\dots n_m=1$.
+%When $\ell_j(x)=(1/2)x^2$ for $j=1,\dots,r$, the problem reduces to the familiar least-squares problem.
+% In a more specific example, if we set $\ell_j\equiv\frac{1}{2}|\cdot|^2$, then we obtain the least-squares cost $\frac{1}{2}\|Ax-b\|_2^2$. Let us consider general differentiable $\ell_1,\dots,\ell_m$.
+\vspace{0.2in}
+
+Write
+\begin{align*}
+  A = \begin{bmatrix}
+        \text{---}~ a_1^\intercal ~\text{---}\\
+         \vdots \\
+        \text{---}~ a_r^\intercal ~\text{---}
+       \end{bmatrix}\in\reals^{r\times n},
+       \qquad
+       \ell(y)=\sum^r_{j=1}\ell_j(y_j).
+\end{align*}
+Then
+\[
+\nabla \ell(x)=(\ell'_1(x_1),\dots,\ell'_r(x_r)).
+\]
+\end{frame}
+
+
+
+\begin{frame}
+%\frametitle{Example: Coordinate gradient descent}
+Randomized coordinate gradient descent with $y^k=Ax^k$
+\begin{align*}
+  x^{k+1}_{i(k)} & = x^{k}_{i(k)} - \alpha A^\intercal_{:,i(k)}  \nabla \ell(y^k-b)\\
+  %Ax^{k+1}-b=Ax^{k}-b+A_{:,i(k)}(x^{k+1}_{i(k)}-x^{k}_{i(k)}).
+y^{k+1}&=y^k+A_{:,i(k)}(x^{k+1}_{i(k)}-x^{k}_{i(k)})
+\end{align*}
+has cost per iteration of $\order{rn_{i(k)}}$, if $\max_{j=1,\dots,r}\mathcal{F}[x\mapsto \ell'_j(x)]=\mathcal{O}(1)$.
+
+\vspace{0.2in}
+
+Initialize $x^0=0$ and $y=Ax^0=0$.
+\end{frame}
+
+
+\begin{frame}[fragile,plain]
+\frametitle{Example: Coordinate GD with block-wise stepsize}
+Consider 
+\begin{align*}
+\begin{array}{ll}
+\underset{x\in \reals^n}{\mbox{minimize}}
+  &f(x),
+  \end{array}
+\end{align*}
+where $f$ is $L$-smooth.
+For any diagonal matrix
+\begingroup\makeatletter\def\f@size{8}\check@mathfonts
+\[
+D=\begin{bmatrix}
+\beta_1I_{n_1}&&&&\\
+%&\beta_2I_{n_2}&&&\\
+&&\ddots\\
+&&&&\beta_mI_{n_m}\\
+\end{bmatrix}
+\]
+\endgroup
+where  $\beta_i>0$ and $I_{n_i}$ is the $n_i\times n_i$ identity matrix, the problem is equivalent to
+\vspace{-10pt}
+\begin{align*}
+\begin{array}{ll}
+\underset{x\in \reals^n}{\mbox{minimize}}
+  &f(Dx).
+  \end{array}
+\end{align*}
+Randomized coordinate gradient method on equivalent problem is
+\begin{align*}
+  x^{k+1}_{i(k)} & = x^{k}_{i(k)} - \alpha_{i(k)} \nabla_{i(k)}f(x^{k}),
+  %x^{k+1}_{j} &= x_j^k\quad\text{for } j\neq i(k),
+\end{align*}
+where $\alpha_{i(k)}=\alpha \beta_{i(k)}$.
+%The method converges of a minimizer exists and $f_i$ is $L$-smooth and $\alpha_i\in (0,2/L_i)$ for $i=1,\dots,m$.
+Non-uniform block-wise stepsize is often necessary for a speedup compared to the (full deterministic) gradient method.
+\end{frame}
+
+\begin{frame}
+\frametitle{Example: Coordinate proximal-gradient descent}
+Consider 
+\[
+% \label{eq:f_sepg}
+\begin{array}{ll}
+\underset{x\in \reals^n}{\mbox{minimize}}& \displaystyle{f(x)+\sum_{i=1}^{m} g_i(x_i)}
+\end{array}
+\]
+where $f$ is differentiable. So we minimize sum of a differentiable function and a separable function.
+% We often use $g_i$ as constraints or regularization on $x_i$. When we have constraints $\ell_i \le x_i\le u_i$, where $\ell_i\in[-\infty,\infty)$ and $u_i\in(-\infty,\infty]$, we let $g_i = \delta_{[\ell_i,u_i]}$.
+% XXX The above discussion belongs to Ch2. XXX
+Write
+\begin{align*}
+  g(x) = \sum_{i=1}^{m} g_i(x_i).
+\end{align*}
+%Since $g$ is separable, so is $\prox_{\alpha g}$.
+
+% \begin{align*}
+%   \big(\prox_{\alpha g}(y))_i & = \prox_{\alpha_i g_i}(y_i),\quad i = 1,\dots, m.
+% \end{align*}
+\medskip\pause
+
+RC-FPI with FBS operator $\prox_{\alpha g}(I-\alpha\nabla f)$
+%Therefore, $T_i x = \prox_{\alpha_i g_i}(x_i-\alpha_i\nabla_i f(x))$, and C-FPI gives us the \emph{}:
+\begin{align*}
+  x^{k+1}_{i(k)} & = \prox_{\alpha g_{i(k)}}\big(x^{k}_{i(k)} - \alpha \nabla_{i(k)}f(x^{k})\big),
+%  x^{k+1}_{j} &= x_j^k\quad\text{for } j\neq i(k).
+\end{align*}
+is coordinate proximal-gradient (descent) method.
+Converges if a minimizer exists, $f$ is $L$-smooth, and $\alpha\in(0,2/L)$.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Example: Coordinate proximal-gradient descent}
+
+With block-wise argument, we get
+\begin{align*}
+  x^{k+1}_{i(k)} & = \prox_{\alpha_{i(k)}g_{i(k)}}\big(x^{k}_{i(k)} - \alpha_{i(k)} \nabla_{i(k)}f(x^{k})\big).
+%  x^{k+1}_{j} &= x_j^k\quad\text{for } j\neq i(k).
+\end{align*}
+Non-uniform block-wise stepsizes important for speedup.
+
+
+\vspace{0.2in}
+
+When $g$ is not separable, $\prox_{\alpha g}(I-\alpha\nabla f)$ is in general not extended coordinate friendly and RC-FPI not efficient.
+
+%The evaluation of even a single coordinate of $\prox_{\alpha g}$ requires the full output of $x-\alpha \nabla f(x)$.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Example: Stochastic dual coordinate ascent}
+Consider 
+\begin{align*}
+\begin{array}{ll}
+\underset{x\in \reals^r}{\mbox{minimize}}& \displaystyle{g(x) + \sum_{i=1}^{n} \ell_i(a_i^\intercal x - b_i)},
+  \end{array}
+\end{align*}
+where $g$ is a strongly convex CCP function on $\reals^r$ (so $g^*$ is smooth)
+and $\ell_i$ is a CCP function on $\reals$.
+% for $i=1,\dots,n$.
+Write
+\begin{align*}
+  A = \begin{bmatrix}
+        \text{---}~ a_1^\intercal ~\text{---}\\
+         \vdots \\
+        \text{---}~ a_n^\intercal ~\text{---}
+       \end{bmatrix} \in\reals^{n\times r},
+       \qquad
+       b= \begin{bmatrix}
+        b_1\\\vdots\\b_n
+       \end{bmatrix} \in\reals^{n}.
+%   \quad
+%   A^\intercaly = \sum_{i=1}^{p}y_j
+%   \begin{bmatrix}
+%   \vert\\
+%   a_j \\
+%   \vert\end{bmatrix}.
+\end{align*}
+Primal problem generated bu
+\[
+\lagrange(x,u)=g(x)+\langle u,Ax-b\rangle -\sum_{i=1}^{n}\ell_i^*(u_i)
+\]
+and corresponding dual problem is
+\begin{align*}
+\begin{array}{ll}
+\underset{u\in \reals^n}{\mbox{maximize}}& -g^*\left(-A^\intercal u\right)-b^\intercal u -\sum_{i=1}^{n}\ell_i^*(u_i).
+    \end{array}
+\end{align*}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Example: Stochastic dual coordinate ascent}
+%\begin{align*}
+%  u^{k+1}_{i(k)} & = \prox_{\alpha_{i(k)}\ell^*_{i(k)}}\left(u^{k}_{i(k)} + \alpha_{i(k)} \big(A_{i(k),:} \nabla g^*(-A^\intercal u^k)-b_{i(k)}\big)\right),
+%\end{align*}
+Randomized coordinate proximal-gradient applied to dual
+\begin{align*}
+  u^{k+1}_{i(k)} & = \prox_{\alpha_{i(k)}\ell^*_{i(k)}}\left(u^{k}_{i(k)} + \alpha_{i(k)} \left(A_{i(k),:} \nabla g^*(y^k)-b_{i(k)}\right)\right)\\
+  y^{k+1}&=y^k-A^\intercal_{i(k),:} (u^{k+1}_{i(k)}-u^k_{i(k)})
+\end{align*}
+is a variation of stochastic dual coordinate ascent.
+Assume $\cF[y\mapsto\nabla g^*(y)]=\cO(r)$ and $\max_{i=1,\dots,n}\mathcal{F}[u\mapsto \prox_{\alpha_i \ell^*_i}(u)]=\mathcal{O}(1)$.
+Extended coordinate friendly with $y^k=-A^\intercal u^k$ maintained.
+We have
+\[
+\cF[\{y^k,u^k\}\mapsto \{y^{k+1},u^{k+1}\}]=\order{rn_{i(k)}}.
+\]
+(One can recover the primal solution with $\nabla g^*(y^k)$.)
+\end{frame}
+
+\begin{frame}
+\frametitle{Note on splitting data}
+
+Iteration of primal coordinate GD accesses $A_{:,i(k)}$, a block of columns.\\
+Iteration of dual coordinate GD accesses $A_{i(k),:}$, a block of rows.
+
+\vspace{0.2in}
+
+In machine learning, a row of $A$ is a training sample, and we may not want to split it into parts. In so, dual approach is preferred.
+
+\end{frame}
+
+
+\begin{frame}[plain]
+\frametitle{Example: MISO/Finito}
+Consider 
+\begin{align*}
+\underset{x\in\reals^n}{\mbox{minimize}}\quad r(x) + \frac{1}{m}\sum_{i=1}^{m}f_i(x) ,
+\end{align*}
+where $f_1,\dots,f_m$ are differentiable.
+Use consensus technique to get
+\begin{align*}
+\underset{\vx\in \reals^{nm}}{\mbox{minimize}}\quad \delta_C(\vx)+\sum_{i=1}^{m}\big(r(x_i)+f_i(x_i)\big),
+\end{align*}
+where $\vx=(x_1,\dots,x_m)$ and $C$ is the consensus set.
+%To clarify, $x_1,\dots,x_m\in \reals^n$.
+\vspace{0.2in}
+
+Write $f(\vx)  =\sum_{i=1}^{m} f_i(x_i) $ and $g(\vx)  = \delta_C(\vx)+\sum_{i=1}^{m} r(x_i)$, so
+\begin{align*}
+  \prox_{\alpha g}(y_1,\dots,y_m) & =  (x,\dots,x),\quad x= \prox_{\alpha r}\left(\frac{1}{m}\sum_{i=1}^{m}y_i\right).
+\end{align*}
+(See Exercise 2.28.)
+\end{frame}
+
+\begin{frame}
+% [plain]
+% \frametitle{Example: MISO/Finito}
+Both FBS and BFS are extended coordinate friendly with $\overline{z}^k$ maintained.\\
+\pause
+RC-FPI with BFS operator $(\opI-\alpha \nabla f)\prox_{\alpha g}$ is
+\begin{align*}
+x^k&= \prox_{\alpha r}\Big(\overline{z}^k\Big)\\
+  %z_{i(k)}^{k+1} & = z^k_{i(k)} - \alpha \nabla f_{i(k)}(x^k),
+  z_{i(k)}^{k+1} & = x^k - \alpha \nabla f_{i(k)}(x^k)\\
+  \overline{z}^{k+1} & = \overline{z}^k + \frac{1}{m}  \left(z_{i(k)}^{k+1} - z_{i(k)}^k\right).
+ % y^{k+1}_{j} &= y_j^k\quad\text{for } j\neq i(k).
+\end{align*}
+RC-FPI with FBS operator $\prox_{\alpha g}(\opI-\alpha \nabla f)$ is
+\begin{align*}
+%z^{k+1}&=x_{i(k)}^k-\alpha \nabla f_{i(k)}(x_{i(k)}^k)\\
+x_{i(k)}^{k+1}&=\prox_{\alpha r}(\overline{z}^{k})\\
+\overline{z}^{k+1}&=\overline{z}^k+\frac{1}{m}\left(x^{k+1}_{i(k)}-x^k_{i(k)}-\alpha (\nabla f_i(x_{i(k)}^{k+1})-\nabla f_i(x_{i(k)}^k))\right),
+\end{align*}
+where
+$\overline{z}^{k}=\frac{1}{m}\sum^m_{i=1}(x^k_i-\alpha \nabla f_{i(k)}(x_{i}^k))$ is maintained.
+
+\pause
+These two equivalent methods are called minimization by incremental surrogate optimization (MISO) or Finito. 
+Converges if a solution exists and $\alpha\in(0,2/L)$.
+\end{frame}
+
+\begin{frame}
+% \frametitle{Example: MISO/Finito}
+Among the two, BFS has a minor and subtle advantage.
+
+\vspace{0.2in}
+For BFS, one can use $(z^0_1,\dots,z^0_m)=(0,\dots,0)$ and $\overline{z}^0=0$ as the starting point.
+
+\vspace{0.2in}
+For FBS, the starting point $(x^0_1,\dots,x^0_m)\in\reals^{nm}$ can be arbitrary, but
+\[
+\overline{z}^0=\frac{1}{m}\sum^m_{i=1}\left(x^0_i-\alpha\nabla f_i(x^0_i)\right)
+\]
+needs to be computed before starting the iterations in order to establish convergence via Theorem~2.
+%(The BFS version has a minor and subtle advantage.
+%For the BFS version, 
+%where the starting point $(z^0_1,\dots,z^0,m)\in\reals^{nm}$ is arbitrary.
+%where the starting point $(x^0_1,\dots,x^0,m)\in\reals^{nm}$ is arbitrary, but $\bar{z}^0$ 
+\end{frame}
+
+\begin{frame}
+\frametitle{Example: Conic programs with many small cones}
+Consider 
+\begin{align*}
+\begin{array}{ll}
+\underset{x\in\reals^n}{\mbox{minimize}} & c^\intercal x \\
+\mbox{subject to}& Ax = b\\
+  & x\in Q_1\times\dots\times Q_m,
+  \end{array}
+\end{align*}
+where $Q_i\subseteq \reals^{n_i}$ is a nonempty closed convex set,
+% for $i=1,\dots,m$,
+$A\in \reals^{r\times n}$ has rank $r$, and $b\in\reals^r$.
+Assume $\cF[x_i\mapsto \proj_{Q_{i}}x_i]=C_i$.
+\vspace{0.2in}
+
+Note: [$x\in Q_1\times\dots\times Q_m$] $\Leftrightarrow$ [$x_i\in Q_i$ for $i=1,\dots,m$]
+\vspace{0.2in}
+
+When $Q_1,\dots,Q_m$ are convex cones, problem called a conic program.
+
+\end{frame}
+
+\begin{frame}
+%[plain]
+%\frametitle{Example: Conic programs with many small cones}
+Naive RC-FPI with DRS applied to 
+\begin{align*}
+\begin{array}{ll}
+\underset{x\in\reals^n}{\mbox{minimize}} & 
+\underbrace{c^\intercal x + \delta_{\{x\,|\,Ax=b\}}(x)}_{=f(x)}+
+\underbrace{\delta_{ Q_1\times\dots\times Q_m}(x)}_{=g(x)}
+  \end{array}
+\end{align*}
+\vspace{-0.3in}
+
+becomes
+\begin{align*}
+    x^{k+1/2}_{i}&=\proj_{Q_{i}}(z^k_{i})\qquad\text{for }i=1,\dots,m\\
+    z^{k+1}_{i(k)}&=z^k_{i(k)}+D_{i(k),:}(2x^{k+1/2}-z^k)+v_{i(k)}-x^{k+1/2}_{i(k)},\end{align*}
+where $D=I-A^\intercal(AA^\intercal)^{-1}A$ and $v=A^\intercal(AA^\intercal)^{-1}b-\alpha Dc$.
+(Exercise 2.24.)
+Costs $\order{C_1+\dots+C_n+nn_{i(k)}}$ per iteration.
+
+\end{frame}
+
+\begin{frame}
+
+Utilize the extended coordinate friendly structure with $y^k=D2x^{k+1/2}-z^k$:
+\begin{align*}
+    x^{k+1/2}_{i(k)}&=\proj_{Q_{i(k)}}(z^k_{i(k)})\\
+    z^{k+1}_{i(k)}&=z^k_{i(k)}+y^k_{i(k)}+v_{i(k)}-x^{k+1/2}_{i(k)}\\
+     y^{k+1}&=D_{:,i(k)}\left(2\proj_{Q_{i(k)}}(z^{k+1}_{i(k)})-2x^{k+1/2}_{i(k)}-z^{k+1}_{i(k)}+z^{k}_{i(k)}\right),
+\end{align*}
+which costs $\order{C_{i(k)}+nn_{i(k)}}$ per iteration.
+\end{frame}
+
+\begin{frame}
+\frametitle{Example: Conic programs with large second-order cone}
+Second-order cone programming (SOCP) is a generalization linear programming with constraints in the the second-order cone
+\[
+Q
+=
+\left\{
+x\in \reals^{n}\,\big|\,
+\sqrt{x_1^2+\dots+x_{n-1}^2}\le x_n
+\right\}.
+\]
+%\vspace{0.2in}
+
+Write $x=(u,t)$ where $u\in \reals^{n-1}$ and $t\in\reals$.
+Projection $x=(u,t)$ to $Q$ scales $u$ and $t$:
+\[
+\proj_{Q}(x)=(\rho u,\sigma t),\qquad
+\left(\rho,\sigma\right)  =\begin{cases}
+                               (0,0) & \mbox{if } t \le -\|u\| \\
+                               (1,1) & \mbox{if }   \|u\|\le t\\
+                         \frac{1}{2}(\|u\|+t)\left(\frac{1}{\|u\|},\frac{1}{t}\right) & \mbox{otherwise}.
+                \end{cases}
+\]
+See Exercise 5.2.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Conic programs with large second-order cone}
+Consider 
+\begin{align*}
+\begin{array}{ll}
+\underset{x\in\reals^n}{\mbox{minimize}} & c^\intercal x \\
+\mbox{subject to}& Ax = b\\
+  & x\in Q
+  \end{array}
+\end{align*}
+where $Q$ is the second-order cone, $A\in \reals^{r\times n}$ with rank $r$, and $b\in\reals^r$.
+For simplicity, assume all blocks are single coordinates, i.e., $m=n$ and $n_1=\dots n_m=1$.
+\medskip
+
+Apply DRS to
+\begin{align*}
+\begin{array}{ll}
+\underset{x\in\reals^n}{\mbox{minimize}} & 
+\underbrace{c^\intercal x + \delta_{\{x\,|\,Ax=b\}}(x)}_{=f(x)}+
+\underbrace{\delta_{ Q}(x)}_{=g(x)}.
+  \end{array}
+\end{align*}
+
+\end{frame}
+
+\begin{frame}
+Define $D=I-A^\intercal(AA^\intercal)^{-1}A$ and $v=A^\intercal(AA^\intercal)^{-1}b-\alpha Dc$ %as in Exercise~\ref{exercise:conic_program} 
+and write
+\[
+z^k=(u^k,t^k),
+\qquad
+D=
+\begin{bmatrix}
+G&f
+\end{bmatrix},
+\]
+where $G\in \reals^{n\times (n-1)}$ and $f\in \reals^{n}$.
+The DRS operator is extended coordinate friendly, and we can implement the RC-FPI with DRS as
+\begin{align*}
+    x^{k+1/2}_{i(k)}&=\proj_{Q}(z^k_{i(k)})\\
+    z^{k+1}_{i(k)}
+    &=z^k_{i(k)}+v_{i(k)}-x^{k+1/2}_{i(k)}\\
+    &\quad +(2\rho(\|u^k\|,t^k)-1)(Gu^k)_{i(k)}+(2\sigma(\|u^k\|,t^k)-1)t^kf_{i(k)}\\
+    \|u^{k+1}\|^2&=
+\left\{
+\begin{array}{ll}
+\|u^k\|^2+(z^{k+1}_{i(k)})^2-(z^k_{i(k)})^2&\text{ if }i(k)<n\\
+\|u^k\|^2&\text{ if }i(k)=n
+\end{array}
+\right.\\
+Gu^{k+1}&=
+\left\{
+\begin{array}{ll}
+Gu^k+G_{:,i(k)}(u^{k+1}_{i(k)}-u^{k}_{i(k)})&\text{ if }i(k)<n\\
+Gu^k&\text{ if }i(k)=n.
+\end{array}
+\right.
+\end{align*}
+This implementation costs $\order{n}$ flops per iteration.
+
+\end{frame}
+
+\section{Discussion}
+
+\begin{frame}{Discussion}
+\begin{itemize}
+    \item RC-FPI may provide a speedup but no guarantees.
+    \bigskip\pause
+    
+    \item Larger stepsizes often, but not always, translate to speedup.
+    \bigskip\pause
+    
+    \item RC-FPI is a precursor to asynchronous FPI in Chapter 6.
+\end{itemize}    
+\end{frame}
+
+\iffalse
+\begin{frame}
+\frametitle{Discussion}
+RC-FPI may provide a speedup over FPI when the operator is extended coordinate friendly
+and very likely when coordinate-wise stepsizes are larger than the step size used by FPI.
+
+\vspace{0.2in}
+
+When comparing RC-FPI and FPI, it is useful to compare 1 iteration of FPI with 1 epoch (defined as $m$ iterations) of RC-FPI. Given (extended) coordinate friendly, 1 epoch of RC-FPI and 1 iteration of FPI have similar computational costs.
+
+\vspace{0.2in}
+Theorems~1 and 2 guarantee a similar amount of reduction in fixed-point residual with 1 iteration of FPI and with 1 epoch of RC-FPI.
+%However, this does not necessarily mean one iteration of FPI and one epoch of RC-FPI actually makes the same amount of progress.
+In practice, RC-FPI and FPI often converge much faster than what Theorems~1 and 2 guarantee.
+If so, the similarity in the guarantees does not have much bearing on the similarity or difference of the actual performances.
+\end{frame}
+
+\begin{frame}
+The ability to use larger stepsizes often, but not always, translates to a speedup.
+There are cases where the stepsize limitation is the bottleneck of the algorithm and alleviating it leads to a speedup.
+In some cases, there is theoretical support for this observation.
+For example, an epoch of the randomized coordinate gradient method achieves a greater reduction in function value than an iteration of the (deterministic full) gradient method when different stepsizes are used for the different blocks.
+Such analyses directly utilizes the subgradient inequality, rather than the resulting monotonicity inequality.
+%the convexity of the functions and therefore goes beyond the scope of this book.
+\medskip
+
+% i.e., in some cases, an epoch of RC-FPI provably makes more progress than an iteration of FPI.
+
+
+RC-FPI may offer no speed-up. There are empirical examples where epochs of RC-FPI and iterations of FPI converge with the same rate. We are not aware of an cases where epochs of RC-FPI make less progress than iterations of FPI.
+%(Even though both methods are much faster than the theoretical guarantees provided by Theorems~\ref{thm:averaged-iter} and \ref{thm:stochastic-iter}.)
+\medskip
+
+
+Nevertheless, studying RC-FPI without any guarantee of speedup serves as a precursor to the asynchronous FPI we discuss in Chapter 6, which achieves more per unit time.
+%In parallel computing, asynchrony can increase the number of iterations run per unit time.
+%Even if an epoch of asynchronous FPI makes the same amount of progress as an iteration of FPI, asynchronuous FPI can make more progress per unit time.
+\end{frame}
+
+
+% \begin{frame}
+% \frametitle{XXX}
+% In this chapter, we present the stochastic coordinate-update fixed-point iteration (RC-FPI), a randomized method that updates a randomly chosen coordinate.
+% \end{frame}
+
+\begin{frame}
+Most conic programs in practice involve multiple cones, rather than a single large second-order cone.
+The previous example demonstrates that multiple cones can be handled separately.
+The current example demonstrates that a single large second-order cone can be furthermore split down to the individual coordinates.
+When a conic program is given by a mixture of small cones and large second-order cones, we can combine these two approaches to implement an extended coordinate friendly RC-FPI.
+Note that the nonnegative orthant cone
+\[
+\reals^n_+=\{(x_1,\dots,x_n)\in \reals^n\,|\,x_1,\dots,x_n\ge 0\},
+\]
+used in linear programming, already splits into $\reals_+\times\cdots\times\reals_+$.
+Large semi-definite cones, used in semidefinite programming, do not split in a similar manner.
+\end{frame}
+
+\fi
+
+
+
+\end{document}
