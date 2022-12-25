@@ -645,7 +645,7 @@ Affine operator $\opT (x) =Ax+b$:
 [$\opT=\nabla f$ for CCP $f$] $\Leftrightarrow$ [$A=A^\intercal$ and $A\succeq 0$]
 \item
 $\opT$ is $\lambda_\mathrm{min}(A+A^\intercal)/2$-strongly monotone if $\lambda_\mathrm{min}(A+A^\intercal)>0$ \\
-and $\sigma_\mathrm{max}(A)$-Lipschitz .
+and $\sigma_\mathrm{max}(A)$-Lipschitz.
 \end{itemize}
 \end{frame}
 
@@ -695,7 +695,7 @@ Continuously differentiable monotone $\opT $,
 
 \begin{frame}
 \frametitle{Example: Saddle subdifferential}
-For convex concave $\lagrange\colon\reals^n \times \reals^m \to \reals\cup\{\pm \infty\}$,\\
+For convex-concave $\lagrange\colon\reals^n \times \reals^m \to \reals\cup\{\pm \infty\}$,\\
 saddle subdifferential operator
 $\partial \lagrange\colon\reals^n \times \reals^m\rightrightarrows\reals^n \times \reals^m$:
 \[\partial \lagrange(x,u) =
@@ -918,7 +918,7 @@ When $\opT \colon\reals^n\rightarrow \reals^n$ is nonexpansive, $\fix \opT$ is c
 \textbf{Proof.}
  $\fix \opT $ is closed since $\opT -\opI$ is continuous.
 
-Suppose $x,~y\in \fix \opT $, $\theta \in [0,1]$, and $z=\theta x+ (1-\theta) y \in \fix \opT $.
+Suppose $x,~y\in \fix \opT $, $\theta \in [0,1]$, and $z=\theta x+ (1-\theta) y  $.
 Since $\opT $ is nonexpansive,
 \[
 \|\opT z-x\| \leq \| z-x \| = (1-\theta) \| y-x \|,
